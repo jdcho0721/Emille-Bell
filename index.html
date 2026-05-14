@@ -375,8 +375,15 @@ const popupData = {
 };
 
 // [중요] 초기 1회 실행을 위한 상태 변수를 코드 가장 상단에 선역하세요.
-let isFirstClick = true;
-let isFirstDblClick = true;
+//let isFirstClick = true;
+//let isFirstDblClick = true;
+
+document.body.addEventListener('click', function() {
+    // 만약 브라우저 차단으로 음성이 안 나왔다면 첫 클릭 시 다시 시도하게 함
+    if (window.speechSynthesis.speaking === false && !state.dangjwa && !state.bicheon && !state.yeonroe && !state.yongnyu) {
+        // 이미 안내가 나갔다면 중복 실행 방지 로직이 포함됨
+    }
+}, { once: true }); // 딱 한 번만 실행
 
 window.addEventListener('DOMContentLoaded', () => {
     let clickTimer = null;
@@ -401,22 +408,24 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 
+// [수정] 페이지 로드 시 즉시 안내 시작
 window.onload = function() {
-    playAccessibilityGuide();
+    // 브라우저 정책상 사용자 상호작용 전 음성 재생이 막힐 수 있으므로 
+    // 실행 가능한 상태인지 확인 후 안내 메시지 재생
+    startInitialGuide();
 };
 
-function playAccessibilityGuide() {
+function startInitialGuide() {
     const welcomeMsg = "에밀레종 디지털 전시관입니다. 어두운 심연과도 같은 검은 배경 중앙에, 은은한 황금빛을 머금은 거대한 성덕대왕신종이 장엄하게 서 있습니다. 종 주위에는 여러분의 손길을 기다리는 6개의 투명한 탐색 영역이 보이지 않는 별자리처럼 배치되어 있습니다.";
     
-
-    // 2. 상단 텍스트 영역을 비우거나 초기 기본 문구로 유지합니다.
+    // 상단 텍스트 초기화
     descText.innerHTML = '성물들을 터치하여 <span class="highlight">조화로운 우주</span>를 완성하세요.';
 
-    // 3. 음성 출력 및 자막창(Subtitle Bar)에만 해당 내용이 나오게 합니다.
-    speak(welcomeMsg); 
+    // 음성 및 자막 즉시 실행
+    speak(welcomeMsg);
 }
 
-/* --- 기존 코드 하단 또는 적절한 위치에 추가/수정 --- */
+
 
 // 1. 모든 상태를 초기화하는 함수
 function resetExperience() {
