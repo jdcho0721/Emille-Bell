@@ -22,6 +22,32 @@
         .full-bell-img { width: 100%; height: auto; display: block; transition: all 0.5s; filter: grayscale(0.5); }
         .full-bell-img.active { filter: grayscale(0) brightness(1.1); }
         
+/* 자막 스타일 추가 */
+        #subtitle-overlay {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 800px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.2rem;
+            line-height: 1.5;
+            z-index: 1000;
+            display: none; /* 기본적으로 숨김 */
+            border: 1px solid var(--gold);
+            pointer-events: none; /* 클릭 방해 금지 */
+            word-break: keep-all;
+        }
+/* 팝업 내부의 자막은 팝업 레이어보다 위에 있도록 설정 */
+        #image-overlay #subtitle-overlay {
+            bottom: 50px;
+            z-index: 300;
+        }
         .touch-zone { 
     position: absolute; 
     border-radius: 50%; 
@@ -93,6 +119,8 @@
     </style>
 </head>
 <body>
+
+<div id="subtitle-overlay"></div>
 
     <div class="story-header">
         <h1>에밀레: <span class="highlight">천년의 철학</span></h1>
@@ -174,6 +202,10 @@
         const descText = document.getElementById('description-text');
         const bellImg = document.getElementById('bell-img');
 
+        const subtitleEl = document.getElementById('subtitle-overlay');
+        let subtitleTimer = null;
+
+
   function speakInfo(section) {
     let text = "";
     if(section === 'work') {
@@ -186,13 +218,43 @@
     speak(text);
 }
 
-        function speak(text) {
+function speak(text) {
             window.speechSynthesis.cancel();
+            
+            // 1. 음성 설정
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'ko-KR';
             utterance.rate = 1.0;
+
+            // 2. 자막 표시
+            showSubtitle(text);
+
+            // 3. 음성 종료 시 자막 숨김 (선택 사항: 일정 시간 후 사라지게 하려면 아래 로직 사용)
+            utterance.onend = () => {
+                // 음성이 끝나고 1초 뒤에 자막 숨김
+                subtitleTimer = setTimeout(() => {
+                    subtitleEl.style.display = 'none';
+                }, 1000);
+            };
+
             window.speechSynthesis.speak(utterance);
         }
+
+
+        /**
+         * 자막을 화면에 띄우는 함수
+         */
+        function showSubtitle(text) {
+            if (subtitleTimer) clearTimeout(subtitleTimer);
+            
+            subtitleEl.innerText = text;
+            subtitleEl.style.display = 'block';
+            
+            // 시각적 피드백을 위해 살짝 깜빡이는 효과 (선택)
+            subtitleEl.style.opacity = 0;
+            setTimeout(() => { subtitleEl.style.opacity = 1; }, 50);
+        }
+
 
 // 상태 변수: 팝업 내 클릭 횟수 추적
 let popupClickCount = 0;
@@ -259,6 +321,9 @@ document.getElementById('image-overlay').onclick = function(e) {
         const utterance = new SpeechSynthesisUtterance(data.adLong);
         utterance.lang = 'ko-KR';
         utterance.rate = 0.9; 
+        utterance.onend = () => {
+                    subtitleTimer = setTimeout(() => { subtitleEl.style.display = 'none'; }, 1000);
+                };
         window.speechSynthesis.speak(utterance);
         // 필요 시 여기서 카운트를 0으로 초기화하여 반복 청취 가능하게 설정 가능
     }
@@ -342,12 +407,13 @@ window.onload = function() {
 function playAccessibilityGuide() {
     const welcomeMsg = "에밀레종 디지털 전시관입니다. 어두운 심연과도 같은 검은 배경 중앙에, 은은한 황금빛을 머금은 거대한 성덕대왕신종이 장엄하게 서 있습니다. 종 주위에는 여러분의 손길을 기다리는 6개의 투명한 탐색 영역이 보이지 않는 별자리처럼 배치되어 있습니다.";
     
-   // 헤더 자막 즉시 업데이트
-    descText.innerHTML = welcomeMsg;
-    // 음성 출력 (기존 재생 중인 안내가 있다면 중단하고 새로 시작)
-    speak(welcomeMsg);
-}
 
+    // 2. 상단 텍스트 영역을 비우거나 초기 기본 문구로 유지합니다.
+    descText.innerHTML = '성물들을 터치하여 <span class="highlight">조화로운 우주</span>를 완성하세요.';
+
+    // 3. 음성 출력 및 자막창(Subtitle Bar)에만 해당 내용이 나오게 합니다.
+    speak(welcomeMsg); 
+}
 
 /* --- 기존 코드 하단 또는 적절한 위치에 추가/수정 --- */
 
@@ -409,9 +475,15 @@ function checkComplete() {
     }
 }
 
+// 팝업 닫을 때 자막도 즉시 숨김
+        function closePopup() { 
+            document.getElementById('image-overlay').style.display = 'none'; 
+            subtitleEl.style.display = 'none';
+            window.speechSynthesis.cancel();
+        }
 
 
-        function closePopup() { document.getElementById('image-overlay').style.display = 'none'; }
+        
 
         function playElement(type, event) {
             const audio = document.getElementById(`audio-${type}`);
