@@ -22,27 +22,36 @@
         .full-bell-img { width: 100%; height: auto; display: block; transition: all 0.5s; filter: grayscale(0.5); }
         .full-bell-img.active { filter: grayscale(0) brightness(1.1); }
         
-/* 자막 스타일 추가 */
-        #subtitle-overlay {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            max-width: 800px;
-            background: rgba(0, 0, 0, 0.7);
-            color: #fff;
-            padding: 15px 25px;
-            border-radius: 10px;
-            text-align: center;
-            font-size: 1.2rem;
-            line-height: 1.5;
-            z-index: 1000;
-            display: none; /* 기본적으로 숨김 */
-            border: 1px solid var(--gold);
-            pointer-events: none; /* 클릭 방해 금지 */
-            word-break: keep-all;
-        }
+/* 자막 스타일 수정 */
+#subtitle-overlay {
+    position: fixed;
+    bottom: 80px; /* 기존 30px에서 80px로 올려서 여유 공간 확보 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 85%;
+    max-width: 700px;
+    background: rgba(0, 0, 0, 0.85); /* 배경을 조금 더 어둡게 하여 가독성 향상 */
+    color: #fff;
+    padding: 18px 28px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 1.25rem; /* 폰트 크기 약간 확대 */
+    line-height: 1.6;
+    z-index: 1000;
+    display: none;
+    border: 2px solid var(--gold); /* 테두리를 조금 더 두껍게 */
+    pointer-events: none;
+    word-break: keep-all;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); /* 그림자 추가로 입체감 부여 */
+}
+
+/* 팝업(이미지 오버레이)이 떴을 때 자막 위치 조정 */
+#image-overlay ~ #subtitle-overlay {
+    bottom: 100px; /* 팝업 시에는 조금 더 위로 배치 */
+    z-index: 300; /* 팝업 레이어(200)보다 위에 표시 */
+}
+
+
 /* 팝업 내부의 자막은 팝업 레이어보다 위에 있도록 설정 */
         #image-overlay #subtitle-overlay {
             bottom: 50px;
@@ -85,12 +94,13 @@
         }
         .popup-content { max-width: 80%; text-align: center; }
 .popup-img { 
-    max-width: 100%; 
-    max-height: 50vh; /* 화면 높이의 50%까지만 허용 */
-    object-fit: contain; /* 이미지 비율 유지 */
-    border: 2px solid white; 
+    max-width: 90%; 
+    max-height: 50vh; /* 기존 50vh에서 40vh로 줄여 상단 여백 확보 */
+    object-fit: contain; 
+    border: 2px solid var(--gold); 
     border-radius: 10px; 
-    margin-bottom: 20px; 
+    margin-top: 10px; /* 상단에서 약간 띄움 */
+    margin-bottom: 10px; 
 }
 
      /*   .popup-img { max-width: 100%; border: 2px solid white; border-radius: 10px; margin-bottom: 20px; }
@@ -153,17 +163,25 @@
 <div class="info-section">
     <h2 class="info-title" onmouseenter="speakInfo('work')">작품 설명: 에밀레 - 천년의 철학</h2>
     <div class="info-content" onmouseenter="speakInfo('work')">
-        <p style="margin:0;"></p>
+        <p>성덕대왕신종의 숭고한 희생과 염원을 현대 기술로 재구성하여, 시각 너머의 깊은 사유를 전하는 전시입니다.</p>
     </div>
 
     <h2 class="info-title" onmouseenter="speakInfo('guide')">사용 방법 안내</h2>
     <div class="info-content" onmouseenter="speakInfo('guide')">
-        <p style="margin:0;"></p>
+        <ul class="guide-list">
+            <li>종의 주요 성물(당좌, 비천상 등)을 터치하면 해설이 시작됩니다.</li>
+            <li>팝업 이미지를 한 번 더 터치하면 상세한 화면 해설을 들을 수 있습니다.</li>
+            <li>4개의 성물을 모두 찾으면 천년의 울림이 담긴 영상을 감상할 수 있습니다.</li>
+        </ul>
     </div>
 
     <h2 class="info-title" onmouseenter="speakInfo('author')">작가 소개: 조준동 (趙浚東)</h2>
     <div class="info-content" onmouseenter="speakInfo('author')">
-        
+        <p>
+            조준동(趙浚東) 작가는 성균관대학교 명예교수이자 국가인권위원회 위원으로 활동하고 있습니다. 
+            인간(Human), 예술(Art), 기술(Technology)의 융합인 <strong>'휴마톨로지(Humartology)'</strong> 철학을 제창하며, 
+            시각장애인을 위한 접근성의 미학을 실천하는 다양한 인터랙티브 예술 작업을 이어가고 있습니다.
+        </p>
     </div>
 </div>
 
@@ -200,17 +218,28 @@
         let subtitleTimer = null;
 
 
+// 기존 스크립트 상단에 추가
+document.body.addEventListener('click', function() {
+    // 빈 음성을 한 번 재생하여 브라우저의 오디오 잠금을 해제합니다.
+    const silent = new SpeechSynthesisUtterance("");
+    window.speechSynthesis.speak(silent);
+    console.log("Audio Context Unlocked");
+}, { once: true });
+
  function speakInfo(section) {
-        let text = "";
-        if(section === 'work') {
-            text = "작품 설명입니다. 성덕대왕신종은 771년 완성된 신라 예술의 결정체입니다. 아이의 목소리가 깃들었다는 에밀레 신화는 중생 구제를 위한 숭고한 희생과 간절한 염원을 상징합니다. 본 전시는 이 천년의 소리를 현대적 기술로 재구성하여 시각 너머의 깊은 사유를 전달합니다.";
-        } else if(section === 'guide') {
-            text = "사용 방법입니다. 종 위의 성물들을 클릭하여 해설을 감상하세요. 이미지를 한 번 더 클릭하여 짧은 요약 해설을, 다시 클릭하여 깊이 있는 상세 해설을 들을 수 있습니다. 4개의 영역이 모두 활성화되면 천지인의 조화가 이루어지며 최종 영상을 감상하실 수 있습니다.";
-        } else if(section === 'author') {
-            text = "작가 소개입니다. 조준동 교수는 성균관대학교 명예교수이자 휴마톨로지 철학을 바탕으로 기술의 사회적 책임과 장애인 접근성 향상을 연구하는 학자이자 작가입니다.";
-        }
-        speak(text); // 이 함수가 호출되면서 화면 중앙 하단에 자막이 표시됩니다.
+    let text = "";
+    if(section === 'work') {
+        text = "작품 설명입니다. 이 전시는 성덕대왕신종의 숭고한 희생과 염원을 현대 기술로 재구성하여, 시각 너머의 깊은 사유를 전하는 전시입니다.";
+    } else if(section === 'guide') {
+        text = "사용 방법입니다. 종 위의 성물을 클릭하여 해설을 감상하세요. 4개의 영역이 모두 활성화되면 최종 영상을 감상하실 수 있습니다.";
+    } else if(section === 'author') {
+        text = "작가 소개입니다. 조준동 교수는 성균관대학교 명예교수이자 휴마톨로지 철학을 바탕으로 기술의 사회적 책임과 장애인 접근성 향상을 연구하는 학자이자 작가입니다.";
     }
+    
+    if (text !== "") {
+        speak(text);
+    }
+}
 
 function speak(text) {
     window.speechSynthesis.cancel();
@@ -358,16 +387,7 @@ const popupData = {
     }
 };
 
-// [중요] 초기 1회 실행을 위한 상태 변수를 코드 가장 상단에 선역하세요.
-//let isFirstClick = true;
-//let isFirstDblClick = true;
 
-document.body.addEventListener('click', function() {
-    // 만약 브라우저 차단으로 음성이 안 나왔다면 첫 클릭 시 다시 시도하게 함
-    if (window.speechSynthesis.speaking === false && !state.dangjwa && !state.bicheon && !state.yeonroe && !state.yongnyu) {
-        // 이미 안내가 나갔다면 중복 실행 방지 로직이 포함됨
-    }
-}, { once: true }); // 딱 한 번만 실행
 
 // 페이지 로드 시에는 텍스트만 표시하고, 첫 클릭 시 음성 재생
 window.addEventListener('load', () => {
