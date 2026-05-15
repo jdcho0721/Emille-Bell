@@ -25,7 +25,7 @@
             position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
             width: 85%; max-width: 700px; background: rgba(0, 0, 0, 0.85); color: #fff;
             padding: 18px 28px; border-radius: 12px; text-align: center; font-size: 1.25rem;
-            line-height: 1.6; z-index: 2000; display: none; border: 2px solid var(--gold);
+            line-height: 1.6; z-index: 1000; display: none; border: 2px solid var(--gold);
             pointer-events: none; word-break: keep-all; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
@@ -41,38 +41,49 @@
         .yeonroe-left { left: 32%; margin-left: -5%; }
         .yeonroe-right { left: 68%; margin-left: -5%; }
 
-  /* 이미지 상단 배치 및 자막 겹침 방지 */
-#image-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.95); z-index: 200; display: none; 
-    flex-direction: column; justify-content: flex-start; /* 상단 정렬 */
-    align-items: center; padding-top: 5vh;
-}
+        #image-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 200; display: none; 
+            flex-direction: column; justify-content: center; align-items: center;
+        }
         .popup-content { max-width: 80%; text-align: center; }
- .popup-img { 
-    max-width: 85%; max-height: 40vh; /* 높이 제한 */
-    object-fit: contain; border: 2px solid var(--gold); 
-    border-radius: 12px; margin-bottom: 20px; 
-}
-
-/* 키보드 포커스 시각화 (접근성 필수) */
-.touch-zone:focus {
-    outline: 3px solid white;
-    background: rgba(212, 175, 55, 0.4);
-}
+        .popup-img { max-width: 90%; max-height: 50vh; object-fit: contain; border: 2px solid var(--gold); border-radius: 10px; margin-top: 10px; margin-bottom: 10px; }
 
         .progress-bar { display: flex; gap: 10px; margin: 20px 0; }
         .dot { width: 12px; height: 12px; border-radius: 50%; background: #333; transition: 0.5s; }
         .dot.active { box-shadow: 0 0 10px currentColor; }
 
-        .info-section { max-width: 700px; width: 90vw; padding: 40px 0; border-top: 1px solid rgba(212, 175, 55, 0.2); margin-top: 20px; }
+    .info-section { 
+    max-width: 800px; /* 가독성을 위해 최대 너비 확장 */
+    width: 90vw; 
+    padding: 60px 0; 
+    border-top: 2px solid rgba(212, 175, 55, 0.3); 
+    margin-top: 40px; 
+}
         .info-title { color: var(--gold); font-size: 1.5rem; margin-bottom: 15px; border-left: 4px solid var(--gold); padding-left: 15px; cursor: help; }
-        .info-content { color: #ccc; line-height: 1.8; margin-bottom: 30px; font-size: 1rem; cursor: help; }
-        .guide-list { margin: 15px 0; padding-left: 20px; color: #bbb; font-size: 1rem; line-height: 1.8; list-style-type: square; }
+        /* 본문 내용 */
+.info-content { 
+    color: #f0f0f0; /* 더 밝은 색상으로 대비 증대 */
+    line-height: 1.9; 
+    margin-bottom: 50px; 
+    font-size: 1.3rem; /* 본문 크기를 시원하게 확대 */
+    cursor: help; 
+    word-break: keep-all; 
+}
+        /* 사용 방법 리스트 */
+.guide-list { 
+    margin: 20px 0; 
+    padding-left: 30px; 
+    color: #e0e0e0; 
+    font-size: 1.25rem; 
+    line-height: 2.2; 
+    list-style-type: disc; 
+}
 
         #video-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 100; display: none; justify-content: center; align-items: center; }
         #video-overlay video { width: 100%; height: 100%; object-fit: contain; }
-        .close-btn { position: absolute; top: 20px; right: 20px; color: white; font-size: 40px; cursor: pointer; z-index: 201; }
+        .close-btn { position: absolute; top: 20px; right: 20px; color: white; transition: all 0.3s ease;
+    cursor: pointer; font-size: 40px; cursor: pointer; z-index: 201; }
 
         .ripple { position: absolute; border-radius: 50%; transform: scale(0); animation: ripple-animation 2s forwards; pointer-events: none; }
         @keyframes ripple-animation { to { transform: scale(4); opacity: 0; } }
@@ -89,20 +100,16 @@
         </p>
     </div>
 
- <div class="interaction-area">
-    <img src="종 전체.png" alt="성덕대왕신종 전체 모습. 각 부분을 터치하여 탐색하세요." class="full-bell-img" id="bell-img">
-    
-    <div class="touch-zone dangjwa-zone" role="button" tabindex="0" aria-label="당좌: 종을 치는 연꽃무늬 지점" onclick="showPopup('dangjwa', event)" onkeydown="if(event.key==='Enter') showPopup('dangjwa', event)"></div>
-    <div class="touch-zone yongnyu-zone" role="button" tabindex="0" aria-label="용뉴: 종 꼭대기의 용 모양 고리" onclick="showPopup('yongnyu', event)" onkeydown="if(event.key==='Enter') showPopup('yongnyu', event)"></div>
-    
-    <div class="touch-zone bicheon-zone bicheon-left" role="button" tabindex="0" aria-label="왼쪽 비천상: 향로를 든 하늘 분" onclick="showPopup('bicheon', event)" onkeydown="if(event.key==='Enter') showPopup('bicheon', event)"></div>
-    <div class="touch-zone bicheon-zone bicheon-right" role="button" tabindex="0" aria-label="오른쪽 비천상: 구름 위를 나는 하늘 분" onclick="showPopup('bicheon', event)" onkeydown="if(event.key==='Enter') showPopup('bicheon', event)"></div>
-    
-    <div class="touch-zone yeonroe-zone yeonroe-left" role="button" tabindex="0" aria-label="왼쪽 연뢰: 아홉 개의 연꽃 봉우리" onclick="showPopup('yeonroe', event)" onkeydown="if(event.key==='Enter') showPopup('yeonroe', event)"></div>
-    <div class="touch-zone yeonroe-zone yeonroe-right" role="button" tabindex="0" aria-label="오른쪽 연뢰: 정갈한 연꽃 봉우리 배열" onclick="showPopup('yeonroe', event)" onkeydown="if(event.key==='Enter') showPopup('yeonroe', event)"></div>
-    
-    <div id="ripple-container"></div>
-</div>
+    <div class="interaction-area">
+        <img src="종 전체.png" alt="성덕대왕신종" class="full-bell-img" id="bell-img">
+        <div class="touch-zone dangjwa-zone" onclick="showPopup('dangjwa', event)"></div>
+        <div class="touch-zone yongnyu-zone" onclick="showPopup('yongnyu', event)"></div>
+        <div class="touch-zone bicheon-zone bicheon-left" onclick="showPopup('bicheon', event)"></div>
+        <div class="touch-zone bicheon-zone bicheon-right" onclick="showPopup('bicheon', event)"></div>
+        <div class="touch-zone yeonroe-zone yeonroe-left" onclick="showPopup('yeonroe', event)"></div>
+        <div class="touch-zone yeonroe-zone yeonroe-right" onclick="showPopup('yeonroe', event)"></div>
+        <div id="ripple-container"></div>
+    </div>
 
     <div class="progress-bar">
         <div id="dot-dangjwa" class="dot"></div>
@@ -120,7 +127,7 @@
         <div class="info-content" onmouseenter="speakInfo('guide')">
             <ul class="guide-list">
                 <li>종의 주요 성물을 터치하면 해설이 시작됩니다.</li>
-                <li>이미지를 한 번 더 터치하면 상세 화면 해설을 들을 수 있습니다.</li>
+                <li>이미지를 한 번 터치하면 화면 해설을 들을 수 있고, 두 번 터치하면 상세 화면 해설을 들을 수 있습니다.</li>
                 <li>4개의 성물을 모두 찾으면 천년의 울림 영상을 감상할 수 있습니다.</li>
             </ul>
         </div>
@@ -131,7 +138,15 @@
     </div>
 
     <div id="image-overlay">
-        <span class="close-btn" onclick="closePopup()">&times;</span>
+
+ <span class="close-btn" 
+      onclick="closePopup()" 
+      onmouseenter="speak('전체 모습으로 돌아가기')" 
+      onfocus="speak('전체 모습으로 돌아가기')"
+      role="button" 
+      tabindex="0" 
+      aria-label="닫기 및 전체 모습으로 돌아가기">&times;</span>
+
         <div class="popup-content">
             <img id="popup-img" class="popup-img" src="" alt="성물 상세 이미지">
             <h2 id="popup-title" style="color: var(--gold); margin-bottom: 5px;"></h2>
@@ -140,7 +155,13 @@
     </div>
 
     <div id="video-overlay">
-        <span class="close-btn" onclick="closeVideo()">&times;</span>
+        <span class="close-btn" 
+      onclick="closePopup()" 
+      onmouseenter="speak('초기화면으로 돌아가기')" 
+      onfocus="speak('초기화면으로 돌아가기')"
+      role="button" 
+      tabindex="0" 
+      aria-label="닫기 및 초기화면으로 돌아가기">&times;</span>
         <div id="video-player-container"></div>
     </div>
 
@@ -201,20 +222,16 @@ function speak(text) {
 
 // 음성이 끝나면 자막을 숨기는 이벤트 리스너 [추가된 부분]
     utterance.onend = function() {
-        // 음성이 끝났을 때만 자막 숨김 (새로운 자막이 들어오지 않았을 경우만)
-        if (subtitleEl.innerText === text) {
-            subtitleEl.style.display = 'none';
-        }
+        subtitleEl.style.display = 'none';
     };
     window.speechSynthesis.speak(utterance);
 }
 
-function showSubtitle(text) {
-    if(!text) return;
-    subtitleEl.innerText = text;
-    subtitleEl.style.display = 'block';
-    subtitleEl.style.opacity = 1;
-}
+        function showSubtitle(text) {
+            subtitleEl.innerText = text;
+            subtitleEl.style.display = 'block';
+            subtitleEl.style.opacity = 1;
+        }
 
        /*  // 3. 성물 터치 및 팝업 로직
         const popupData = {
@@ -289,18 +306,24 @@ const popupData = {
             const data = popupData[currentActiveType];
             popupClickCount++;
 
- if (popupClickCount === 1) {
-        speak("화면 해설 요약 버전입니다. " + data.adShort);
-    } else {
-        speak("화면 해설 상세 버전입니다. " + data.adLong);
-    }
+            if (popupClickCount === 1) speak(data.adShort);
+            else speak(data.adLong);
         };
 
-        function closePopup() { 
-            document.getElementById('image-overlay').style.display = 'none'; 
-            subtitleEl.style.display = 'none';
-            window.speechSynthesis.cancel();
-        }
+    function closePopup() {
+    // 1. 현재 출력 중인 안내 음성 중단
+    window.speechSynthesis.cancel();
+
+    // 2. 팝업창 및 자막 숨김
+    document.getElementById('image-overlay').style.display = 'none'; 
+    subtitleEl.style.display = 'none';
+
+    // 3. 포커스 복원 (접근성 유지)
+    if (currentActiveType) {
+        const zone = document.querySelector(`.${currentActiveType}-zone`);
+        if (zone) zone.focus();
+    }
+}
 
         // 4. 정보 섹션 안내
         function speakInfo(section) {
