@@ -45,9 +45,9 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); z-index: 200; display: none; 
             flex-direction: column; justify-content: center; align-items: center;
-            user-select: none; -webkit-user-select: none; /* 롱 프레스 시 텍스트 드래그 방지 */
+            user-select: none; -webkit-user-select: none;
         }
-        .popup-content { max-width: 80%; text-align: center; pointer-events: none; } /* 내부 요소 클릭 간섭 배제 */
+        .popup-content { max-width: 80%; text-align: center; pointer-events: none; }
         .popup-img { max-width: 90%; max-height: 50vh; object-fit: contain; border: 2px solid var(--gold); border-radius: 10px; margin-top: 10px; margin-bottom: 10px; }
 
         .progress-bar { display: flex; gap: 10px; margin: 20px 0; }
@@ -134,8 +134,8 @@
         <h2 class="info-title" tabindex="0" onmouseenter="speakInfo('guide')" onfocus="speakInfo('guide')">사용 방법 안내</h2>
         <div class="info-content" tabindex="0" onmouseenter="speakInfo('guide')" onfocus="speakInfo('guide')">
             <ul class="guide-list">
-                <li>종의 주요 성물을 터치하면 해설이 시작됩니다.</li>
-                <li>이미지를 한 번 터치하면 화면 해설을 들을 수 있고, 한 번 더 터치하면 상세 화면 해설을 들을 수 있습니다.</li>
+                <li>종의 주요 성물을 터치하면 정교하게 녹음된 해설 오디오가 시작됩니다.</li>
+                <li>이미지를 한 번 터치하면 1차 화면 해설을 들을 수 있고, 한 번 더 터치하면 상세 화면 해설을 깊이 있게 감상할 수 있습니다.</li>
                 <li><strong>화면을 길게 누르고 있으면(Long Press) 언제든 전체화면으로 복귀합니다.</strong></li>
                 <li>4개의 성물을 모두 찾으면 천년의 울림 영상을 감상할 수 있습니다.</li>
             </ul>
@@ -149,7 +149,7 @@
     <div id="image-overlay" role="dialog" aria-modal="true">
         <span class="close-btn" 
               onclick="closePopup()" 
-              onmouseenter="speak('전체화면으로 돌아가기')" 
+              onmouseenter="speakText('전체화면으로 돌아가기')" 
               onfocus="handleCloseFocus('popup')"
               onkeydown="handleCloseKey(event, 'popup')"
               role="button" 
@@ -159,14 +159,17 @@
         <div class="popup-content">
             <img id="popup-img" class="popup-img" src="" alt="성물 상세 이미지">
             <h2 id="popup-title" style="color: var(--gold); margin-bottom: 5px;"></h2>
-            <p style="color: #888; margin-top: 20px; font-size: 1rem;">한 번 누르면 해설 재생, 길게 누르면 전체화면으로 돌아갑니다.</p>
+            <p style="color: #999; margin-top: 20px; font-size: 1.05rem; line-height: 1.5;">
+                짧게 터치: 상세 고품질 해설 재생<br>
+                <span style="color: var(--gold); font-weight: bold;">길게 누르기(Long Press): 전체화면으로 돌아가기</span>
+            </p>
         </div>
     </div>
 
     <div id="video-overlay" role="dialog" aria-modal="true">
         <span class="close-btn" 
               onclick="closeVideo()" 
-              onmouseenter="speak('전체화면으로 돌아가기')" 
+              onmouseenter="speakText('전체화면으로 돌아가기')" 
               onfocus="handleCloseFocus('video')"
               onkeydown="handleCloseKey(event, 'video')"
               role="button" 
@@ -180,38 +183,58 @@
     <audio id="audio-yeonroe" src="yeonroe_sound.mp3"></audio>
     <audio id="audio-yongnyu" src="bell_sound.mp3"></audio>
 
+    <audio id="narrator-player"></audio>
+
     <script>
         const state = { dangjwa: false, bicheon: false, yeonroe: false, yongnyu: false };
         const descText = document.getElementById('description-text');
         const bellImg = document.getElementById('bell-img');
         const subtitleEl = document.getElementById('subtitle-overlay');
+        const narratorPlayer = document.getElementById('narrator-player');
         
         let popupClickCount = 0;
         let currentActiveType = null;
         let initialGuidePlayed = false;
         let isEnteringPopup = false; 
 
-        // 롱 프레스 감지를 위한 타이머 및 플래그 변수
         let pressTimer = null;
         let isLongPress = false;
-        const LONG_PRESS_DURATION = 800; // 0.8초 동안 누르면 실행
+        const LONG_PRESS_DURATION = 800;
 
         document.body.addEventListener('click', function(e) {
             if (e.target.classList.contains('touch-zone')) {
                 initialGuidePlayed = true; 
                 return;
             }
-
-            window.speechSynthesis.cancel(); 
-            const silent = new SpeechSynthesisUtterance("");
-            window.speechSynthesis.speak(silent);
-            
-            if (!initialGuidePlayed) {
-                initialGuidePlayed = true;
-            }
+            stopAllAudio();
+            if (!initialGuidePlayed) initialGuidePlayed = true;
         }, { once: true });
 
-        function speak(text) {
+        function stopAllAudio() {
+            window.speechSynthesis.cancel();
+            narratorPlayer.pause();
+            narratorPlayer.currentTime = 0;
+            document.querySelectorAll('audio:not(#narrator-player)').forEach(audio => {
+                audio.pause();
+                audio.currentTime = 0;
+            });
+        }
+
+        function playNarratorAudio(fileUrl, fallbackText) {
+            stopAllAudio();
+            showSubtitle(fallbackText);
+
+            narratorPlayer.src = fileUrl;
+            narratorPlayer.play().catch(err => {
+                speakText(fallbackText);
+            });
+
+            narratorPlayer.onended = function() {
+                subtitleEl.style.display = 'none';
+            };
+        }
+
+        function speakText(text) {
             window.speechSynthesis.cancel(); 
             const utterance = new SpeechSynthesisUtterance(text);
             const voices = window.speechSynthesis.getVoices();
@@ -226,8 +249,8 @@
             if (preferredVoice) utterance.voice = preferredVoice;
             utterance.lang = 'ko-KR';
 
-            utterance.rate = 0.9;   
-            utterance.pitch = 0.7;  
+            utterance.rate = 0.85;   
+            utterance.pitch = 0.85;  
             utterance.volume = 1.0;
 
             utterance.onend = function() {
@@ -246,6 +269,9 @@
             dangjwa: { 
                 img: '당좌.png', 
                 title: '당좌(撞座): 호국과 통합', 
+                audioDesc: 'dangjwa_desc.mp3',
+                audioShort: 'dangjwa_short.mp3',
+                audioLong: 'dangjwa_long.mp3',
                 desc: '당좌입니다. 국가의 안녕을 지키고 백성의 마음을 하나로 모으는 염원을 담고 있습니다.', 
                 adShort: '에밀레종의 당좌는 종을 치는 최적의 과학적 위치에 있으며, 화려한 연꽃무늬가 기하학적 대칭을 이루어 성스러운 생동감을 자아냅니다.',
                 adLong: '가장 깊은 울림이 시작되는 당좌는 국가의 안녕과 통합의 염원을 상징합니다. 중앙의 볼록한 원형은 힘의 응축을, 이를 감싼 여덟 잎의 연꽃은 완벽한 균형미를 보여줍니다. 정교한 연꽃 곡선이 주는 시각적 안정감과 함께, 터치 시 심장을 울리는 웅장한 맥놀이 소리를 느껴보세요.',
@@ -254,6 +280,9 @@
             yeonroe: { 
                 img: '연뢰.png', 
                 title: '연뢰(蓮蕾): 생명의 봉우리', 
+                audioDesc: 'yeonroe_desc.mp3',
+                audioShort: 'yeonroe_short.mp3',
+                audioLong: 'yeonroe_long.mp3',
                 desc: '연뢰입니다. 만물의 탄생과 다산, 끊이지 않는 생명력과 풍요를 상징합니다.', 
                 adShort: '종 윗부분, 보상화 문양 안의 사각형 공간에 아홉 개의 연꽃 봉우리가 3행 3열로 정갈하게 솟아 있습니다. 매끄러운 곡선을 그리며 피어오르는 봉우리들은 만물의 탄생과 풍요로운 우주의 질서를 시각적으로 보여줍니다.',
                 adLong: '천상의 정원 같은 연뢰 영역은 신라의 조화로운 세계관을 상징합니다. 사각형 안의 아홉 봉우리는 번뇌가 씻긴 깨달음의 열매이며, 완벽한 수직·수평 배열로 정위감을 제공합니다. 터치할 때마다 들리는 맑은 타악 선율은 종의 거대한 울림을 준비하는 생명의 전주곡입니다.',
@@ -262,6 +291,9 @@
             bicheon: { 
                 img: '비천상.png', 
                 title: '비천상(飛天像): 해탈의 선율', 
+                audioDesc: 'bicheon_desc.mp3',
+                audioShort: 'bicheon_short.mp3',
+                audioLong: 'bicheon_long.mp3',
                 desc: '비천상입니다. 중생의 번뇌를 씻어내고 자비로운 해탈과 구제를 상징합니다.', 
                 adShort: '종의 허리 부분, 구름 위를 날아오르는 비천상은 연꽃 향로를 든 채 우아하게 무릎을 꿇고 있습니다. 하늘로 솟구치는 긴 옷자락과 흩날리는 꽃잎들은 종의 신비로운 울림을 시각화하며 천상의 음악이 흐르는 듯한 분위기를 자아냅니다.',
                 adLong: '종의 여백을 채운 비천상은 자비로운 미소로 평온함을 전합니다. 하늘로 뻗은 가느다란 옷자락은 중력을 거스르는 역동적인 곡선으로 종소리의 맥놀이 현상을 시각화합니다. 주변의 보상화 문양은 부처님의 목소리를 향기로 묘사하며 공간에 리듬감을 더하고, 터치 시 해금 선율처럼 상승하는 기운의 사운드스케이프가 펼쳐집니다.',
@@ -270,6 +302,9 @@
             yongnyu: { 
                 img: '용뉴.png', 
                 title: '용뉴(龍鈕): 권위와 울림', 
+                audioDesc: 'yongnyu_desc.mp3',
+                audioShort: 'yongnyu_short.mp3',
+                audioLong: 'yongnyu_long.mp3',
                 desc: '용뉴입니다. 왕의 권위와 신성함을 상징하며 종소리를 멀리 퍼지게 하는 지혜가 담겨 있습니다.', 
                 adShort: '종 맨 꼭대기의 용뉴는 황금 용이 네 발로 종의 어깨를 힘차게 움켜쥔 형상입니다. 입체적인 비늘은 금방이라도 포효할 듯 생생한 질감을 전하며, 그 뒤로 솟은 대나무 모양 음관은 소리를 땅으로 전달하는 지혜의 통로 역할을 합니다.',
                 adLong: '종의 정상부, 용뉴는 권위와 신성함이 응집된 공간입니다. C자형으로 굽은 역동적인 용의 몸체와 근육질의 앞발이 종을 견고하게 지탱하며, 등 뒤에 수직으로 솟은 대나무 마디 모양 음관은 정교한 대칭 문양으로 지혜의 깊이를 더합니다.',
@@ -279,8 +314,7 @@
 
         function showPopup(type, event) {
             if (event) event.stopPropagation();
-            
-            window.speechSynthesis.cancel();
+            stopAllAudio();
             subtitleEl.style.display = 'none';
 
             currentActiveType = type;
@@ -292,7 +326,7 @@
             document.getElementById('popup-title').innerText = data.title;
             document.getElementById('image-overlay').style.display = 'flex';
 
-            speak(data.desc);
+            playNarratorAudio(data.audioDesc, data.desc);
 
             const audio = document.getElementById(`audio-${type}`);
             if(audio) { audio.currentTime = 0; audio.play(); }
@@ -310,7 +344,7 @@
 
         function handleCloseFocus(layer) {
             if (isEnteringPopup) return;
-            speak('전체화면으로 돌아가기');
+            speakText('전체화면으로 돌아가기');
         }
 
         function handleZoneKey(event, type) {
@@ -328,15 +362,12 @@
             }
         }
 
-        // --- 롱 프레스(Long Press) 이벤트 처리 시스템 시작 ---
         const overlayEl = document.getElementById('image-overlay');
 
         function startPress(e) {
-            // X 버튼(close-btn) 영역을 직접 누른 경우는 기본 동작을 따름
             if (e.target.classList.contains('close-btn')) return;
-
             isLongPress = false;
-            // 지정한 시간(0.8초) 동안 누르고 있으면 전체화면으로 돌아가기 실행
+
             pressTimer = setTimeout(() => {
                 isLongPress = true;
                 closePopup(); 
@@ -345,29 +376,22 @@
 
         function endPress(e) {
             if (pressTimer) clearTimeout(pressTimer);
-            
-            // 만약 롱 프레스 동작이 처리되었다면 클릭 연쇄 이벤트를 차단
             if (isLongPress) {
                 e.preventDefault();
                 e.stopPropagation();
             }
         }
 
-        // 모바일 터치 이벤트 바인딩
         overlayEl.addEventListener('touchstart', startPress, { passive: false });
         overlayEl.addEventListener('touchend', endPress, { passive: false });
         overlayEl.addEventListener('touchmove', () => { if (pressTimer) clearTimeout(pressTimer); });
 
-        // PC 마우스 이벤트 바인딩
         overlayEl.addEventListener('mousedown', startPress);
         overlayEl.addEventListener('mouseup', endPress);
         overlayEl.addEventListener('mouseleave', () => { if (pressTimer) clearTimeout(pressTimer); });
 
-        // 기존 단일 클릭 리스너 수정
         overlayEl.onclick = function(e) {
             if (e.target.classList.contains('close-btn') || !currentActiveType) return;
-            
-            // 롱 프레스 상태였다면 일반 클릭 해설이 실행되지 않도록 완전 방어
             if (isLongPress) {
                 isLongPress = false;
                 return;
@@ -376,18 +400,20 @@
             const data = popupData[currentActiveType];
             popupClickCount++;
 
-            if (popupClickCount === 1) speak(data.adShort);
-            else speak(data.adLong);
+            if (popupClickCount === 1) {
+                playNarratorAudio(data.audioShort, data.adShort);
+            } else {
+                playNarratorAudio(data.audioLong, data.adLong);
+            }
         };
-        // --- 롱 프레스(Long Press) 이벤트 처리 시스템 끝 ---
 
+        // [수정 핵심 부분] X 버튼 클릭이나 롱 프레스로 빠져나갔을 때 "전체화면입니다" 출력
         function closePopup() {
-            window.speechSynthesis.cancel();
+            stopAllAudio();
             document.getElementById('image-overlay').style.display = 'none'; 
             subtitleEl.style.display = 'none';
 
-            // 전체화면 복귀 안내 발화 수행
-            speak('전체화면으로 돌아가기');
+            speakText('전체화면입니다');
 
             if (currentActiveType) {
                 const zone = document.querySelector(`.${currentActiveType}-zone`);
@@ -400,14 +426,14 @@
             if(section === 'work') text = "작품 설명입니다. 성덕대왕신종의 염원을 현대 기술로 재구성한 전시입니다.";
             else if(section === 'guide') text = "사용 방법입니다. 성물을 터치하여 해설을 듣고 4개를 모두 모아 영상을 감상하세요.";
             else if(section === 'author') text = "작가 소개입니다. 조준동 작가는 기술과 예술의 융합인 휴마톨로지를 실천합니다.";
-            if (text) speak(text);
+            if (text) speakText(text);
         }
 
         function checkComplete() {
             if (state.dangjwa && state.bicheon && state.yeonroe && state.yongnyu) {
                 bellImg.classList.add('active');
                 setTimeout(() => {
-                    speak("천지인의 조화가 이루어졌습니다. 영상을 감상하시겠습니까?");
+                    speakText("천지인의 조화가 이루어졌습니다. 영상을 감상하시겠습니까?");
                     if(confirm("모든 성물을 찾았습니다. 영상을 보시겠습니까?")) showVideo();
                     else resetExperience();
                 }, 2000);
@@ -415,7 +441,7 @@
         }
 
         function showVideo() {
-            window.speechSynthesis.cancel();
+            stopAllAudio();
             isEnteringPopup = true; 
             document.getElementById('video-overlay').style.display = 'flex';
             document.getElementById('video-player-container').innerHTML = `
@@ -429,9 +455,11 @@
         }
 
         function closeVideo() {
-            window.speechSynthesis.cancel();
+            stopAllAudio();
             document.getElementById('video-overlay').style.display = 'none';
             document.getElementById('video-player-container').innerHTML = '';
+            
+            speakText('전체화면입니다');
             resetExperience();
         }
 
