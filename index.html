@@ -29,8 +29,8 @@
             pointer-events: none; word-break: keep-all; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .touch-zone { position: absolute; border-radius: 50%; z-index: 10; cursor: pointer; border: 2px dashed rgba(212, 175, 55, 0.5); transition: all 0.3s; }
-        .touch-zone:hover { background: rgba(212, 175, 55, 0.2); border-style: solid; }
+        .touch-zone { position: absolute; border-radius: 50%; z-index: 10; cursor: pointer; border: 2px dashed rgba(212, 175, 55, 0.5); transition: all 0.3s; outline: none; }
+        .touch-zone:hover, .touch-zone:focus { background: rgba(212, 175, 55, 0.2); border-style: solid; box-shadow: 0 0 12px var(--gold); }
 
         .yongnyu-zone { top: 12%; left: 50%; width: 18%; height: 12%; margin-left: -9%; margin-top: -6%; } 
         .dangjwa-zone { top: 65%; left: 50%; width: 18%; height: 18%; margin-left: -9%; margin-top: -9%; }
@@ -45,45 +45,53 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); z-index: 200; display: none; 
             flex-direction: column; justify-content: center; align-items: center;
+            user-select: none; -webkit-user-select: none; /* 롱 프레스 시 텍스트 드래그 방지 */
         }
-        .popup-content { max-width: 80%; text-align: center; }
+        .popup-content { max-width: 80%; text-align: center; pointer-events: none; } /* 내부 요소 클릭 간섭 배제 */
         .popup-img { max-width: 90%; max-height: 50vh; object-fit: contain; border: 2px solid var(--gold); border-radius: 10px; margin-top: 10px; margin-bottom: 10px; }
 
         .progress-bar { display: flex; gap: 10px; margin: 20px 0; }
         .dot { width: 12px; height: 12px; border-radius: 50%; background: #333; transition: 0.5s; }
         .dot.active { box-shadow: 0 0 10px currentColor; }
 
-    .info-section { 
-    max-width: 800px; /* 가독성을 위해 최대 너비 확장 */
-    width: 90vw; 
-    padding: 60px 0; 
-    border-top: 2px solid rgba(212, 175, 55, 0.3); 
-    margin-top: 40px; 
-}
-        .info-title { color: var(--gold); font-size: 1.5rem; margin-bottom: 15px; border-left: 4px solid var(--gold); padding-left: 15px; cursor: help; }
-        /* 본문 내용 */
-.info-content { 
-    color: #f0f0f0; /* 더 밝은 색상으로 대비 증대 */
-    line-height: 1.9; 
-    margin-bottom: 50px; 
-    font-size: 1.3rem; /* 본문 크기를 시원하게 확대 */
-    cursor: help; 
-    word-break: keep-all; 
-}
-        /* 사용 방법 리스트 */
-.guide-list { 
-    margin: 20px 0; 
-    padding-left: 30px; 
-    color: #e0e0e0; 
-    font-size: 1.25rem; 
-    line-height: 2.2; 
-    list-style-type: disc; 
-}
+        .info-section { 
+            max-width: 800px; 
+            width: 90vw; 
+            padding: 60px 0; 
+            border-top: 2px solid rgba(212, 175, 55, 0.3); 
+            margin-top: 40px; 
+        }
+        .info-title { color: var(--gold); font-size: 1.5rem; margin-bottom: 15px; border-left: 4px solid var(--gold); padding-left: 15px; cursor: help; outline: none; }
+        .info-title:focus { background: rgba(212, 175, 55, 0.1); }
+
+        .info-content { 
+            color: #f0f0f0; 
+            line-height: 1.9; 
+            margin-bottom: 50px; 
+            font-size: 1.3rem; 
+            cursor: help; 
+            word-break: keep-all; 
+            outline: none;
+        }
+        .info-content:focus { background: rgba(255, 255, 255, 0.05); }
+
+        .guide-list { 
+            margin: 20px 0; 
+            padding-left: 30px; 
+            color: #e0e0e0; 
+            font-size: 1.25rem; 
+            line-height: 2.2; 
+            list-style-type: disc; 
+        }
 
         #video-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 100; display: none; justify-content: center; align-items: center; }
         #video-overlay video { width: 100%; height: 100%; object-fit: contain; }
-        .close-btn { position: absolute; top: 20px; right: 20px; color: white; transition: all 0.3s ease;
-    cursor: pointer; font-size: 40px; cursor: pointer; z-index: 201; }
+        
+        .close-btn { 
+            position: absolute; top: 20px; right: 20px; color: white; transition: all 0.3s ease;
+            cursor: pointer; font-size: 40px; z-index: 201; outline: none; display: inline-block; padding: 10px; pointer-events: auto;
+        }
+        .close-btn:hover, .close-btn:focus { color: var(--gold); text-shadow: 0 0 10px var(--gold); transform: scale(1.1); }
 
         .ripple { position: absolute; border-radius: 50%; transform: scale(0); animation: ripple-animation 2s forwards; pointer-events: none; }
         @keyframes ripple-animation { to { transform: scale(4); opacity: 0; } }
@@ -101,13 +109,13 @@
     </div>
 
     <div class="interaction-area">
-        <img src="종 전체.png" alt="성덕대왕신종" class="full-bell-img" id="bell-img">
-        <div class="touch-zone dangjwa-zone" onclick="showPopup('dangjwa', event)"></div>
-        <div class="touch-zone yongnyu-zone" onclick="showPopup('yongnyu', event)"></div>
-        <div class="touch-zone bicheon-zone bicheon-left" onclick="showPopup('bicheon', event)"></div>
-        <div class="touch-zone bicheon-zone bicheon-right" onclick="showPopup('bicheon', event)"></div>
-        <div class="touch-zone yeonroe-zone yeonroe-left" onclick="showPopup('yeonroe', event)"></div>
-        <div class="touch-zone yeonroe-zone yeonroe-right" onclick="showPopup('yeonroe', event)"></div>
+        <img src="종 전체.png" alt="성덕대왕신종 전체 모습" class="full-bell-img" id="bell-img">
+        <div class="touch-zone dangjwa-zone" role="button" tabindex="0" aria-label="당좌" onclick="showPopup('dangjwa', event)" onkeydown="handleZoneKey(event, 'dangjwa')"></div>
+        <div class="touch-zone yongnyu-zone" role="button" tabindex="0" aria-label="용뉴" onclick="showPopup('yongnyu', event)" onkeydown="handleZoneKey(event, 'yongnyu')"></div>
+        <div class="touch-zone bicheon-zone bicheon-left" role="button" tabindex="0" aria-label="왼쪽 비천상" onclick="showPopup('bicheon', event)" onkeydown="handleZoneKey(event, 'bicheon')"></div>
+        <div class="touch-zone bicheon-zone bicheon-right" role="button" tabindex="0" aria-label="오른쪽 비천상" onclick="showPopup('bicheon', event)" onkeydown="handleZoneKey(event, 'bicheon')"></div>
+        <div class="touch-zone yeonroe-zone yeonroe-left" role="button" tabindex="0" aria-label="왼쪽 연뢰" onclick="showPopup('yeonroe', event)" onkeydown="handleZoneKey(event, 'yeonroe')"></div>
+        <div class="touch-zone yeonroe-zone yeonroe-right" role="button" tabindex="0" aria-label="오른쪽 연뢰" onclick="showPopup('yeonroe', event)" onkeydown="handleZoneKey(event, 'yeonroe')"></div>
         <div id="ripple-container"></div>
     </div>
 
@@ -119,49 +127,51 @@
     </div>
 
     <div class="info-section">
-        <h2 class="info-title" onmouseenter="speakInfo('work')">작품 설명: 에밀레 - 천년의 철학</h2>
-        <div class="info-content" onmouseenter="speakInfo('work')">
+        <h2 class="info-title" tabindex="0" onmouseenter="speakInfo('work')" onfocus="speakInfo('work')">작품 설명: 에밀레 - 천년의 철학</h2>
+        <div class="info-content" tabindex="0" onmouseenter="speakInfo('work')" onfocus="speakInfo('work')">
             <p>성덕대왕신종의 숭고한 희생과 염원을 현대 기술로 재구성하여, 시각 너머의 깊은 사유를 전하는 전시입니다.</p>
         </div>
-        <h2 class="info-title" onmouseenter="speakInfo('guide')">사용 방법 안내</h2>
-        <div class="info-content" onmouseenter="speakInfo('guide')">
+        <h2 class="info-title" tabindex="0" onmouseenter="speakInfo('guide')" onfocus="speakInfo('guide')">사용 방법 안내</h2>
+        <div class="info-content" tabindex="0" onmouseenter="speakInfo('guide')" onfocus="speakInfo('guide')">
             <ul class="guide-list">
                 <li>종의 주요 성물을 터치하면 해설이 시작됩니다.</li>
-                <li>이미지를 한 번 터치하면 화면 해설을 들을 수 있고, 두 번 터치하면 상세 화면 해설을 들을 수 있습니다.</li>
+                <li>이미지를 한 번 터치하면 화면 해설을 들을 수 있고, 한 번 더 터치하면 상세 화면 해설을 들을 수 있습니다.</li>
+                <li><strong>화면을 길게 누르고 있으면(Long Press) 언제든 전체화면으로 복귀합니다.</strong></li>
                 <li>4개의 성물을 모두 찾으면 천년의 울림 영상을 감상할 수 있습니다.</li>
             </ul>
         </div>
-        <h2 class="info-title" onmouseenter="speakInfo('author')">작가 소개: 조준동 (趙浚東)</h2>
-        <div class="info-content" onmouseenter="speakInfo('author')">
+        <h2 class="info-title" tabindex="0" onmouseenter="speakInfo('author')" onfocus="speakInfo('author')">작가 소개: 조준동 (趙浚東)</h2>
+        <div class="info-content" tabindex="0" onmouseenter="speakInfo('author')" onfocus="speakInfo('author')">
             <p>조준동(趙浚東) 작가는 휴마톨로지(Humartology) 철학을 바탕으로 시각장애인을 위한 접근성의 미학을 실천합니다.</p>
         </div>
     </div>
 
-    <div id="image-overlay">
-
- <span class="close-btn" 
-      onclick="closePopup()" 
-      onmouseenter="speak('전체 모습으로 돌아가기')" 
-      onfocus="speak('전체 모습으로 돌아가기')"
-      role="button" 
-      tabindex="0" 
-      aria-label="닫기 및 전체 모습으로 돌아가기">&times;</span>
+    <div id="image-overlay" role="dialog" aria-modal="true">
+        <span class="close-btn" 
+              onclick="closePopup()" 
+              onmouseenter="speak('전체화면으로 돌아가기')" 
+              onfocus="handleCloseFocus('popup')"
+              onkeydown="handleCloseKey(event, 'popup')"
+              role="button" 
+              tabindex="0" 
+              aria-label="닫기 및 전체화면으로 돌아가기">&times;</span>
 
         <div class="popup-content">
             <img id="popup-img" class="popup-img" src="" alt="성물 상세 이미지">
             <h2 id="popup-title" style="color: var(--gold); margin-bottom: 5px;"></h2>
-            <p style="color: #888; margin-top: 20px; font-size: 0.9rem;">이미지를 터치하여 상세 해설을 확인하세요.</p>
+            <p style="color: #888; margin-top: 20px; font-size: 1rem;">한 번 누르면 해설 재생, 길게 누르면 전체화면으로 돌아갑니다.</p>
         </div>
     </div>
 
-    <div id="video-overlay">
+    <div id="video-overlay" role="dialog" aria-modal="true">
         <span class="close-btn" 
-      onclick="closePopup()" 
-      onmouseenter="speak('초기화면으로 돌아가기')" 
-      onfocus="speak('초기화면으로 돌아가기')"
-      role="button" 
-      tabindex="0" 
-      aria-label="닫기 및 초기화면으로 돌아가기">&times;</span>
+              onclick="closeVideo()" 
+              onmouseenter="speak('전체화면으로 돌아가기')" 
+              onfocus="handleCloseFocus('video')"
+              onkeydown="handleCloseKey(event, 'video')"
+              role="button" 
+              tabindex="0" 
+              aria-label="닫기 및 전체화면으로 돌아가기">&times;</span>
         <div id="video-player-container"></div>
     </div>
 
@@ -179,53 +189,52 @@
         let popupClickCount = 0;
         let currentActiveType = null;
         let initialGuidePlayed = false;
+        let isEnteringPopup = false; 
 
-  
+        // 롱 프레스 감지를 위한 타이머 및 플래그 변수
+        let pressTimer = null;
+        let isLongPress = false;
+        const LONG_PRESS_DURATION = 800; // 0.8초 동안 누르면 실행
 
+        document.body.addEventListener('click', function(e) {
+            if (e.target.classList.contains('touch-zone')) {
+                initialGuidePlayed = true; 
+                return;
+            }
 
-// 1. 초기 오디오 잠금 해제 및 시작 안내 수정
-document.body.addEventListener('click', function(e) {
-    // 만약 터치한 곳이 'touch-zone'(성물)이라면 초기 안내를 하지 않고 바로 성물 해설로 넘깁니다.
-    if (e.target.classList.contains('touch-zone')) {
-        initialGuidePlayed = true; 
-        return;
-    }
+            window.speechSynthesis.cancel(); 
+            const silent = new SpeechSynthesisUtterance("");
+            window.speechSynthesis.speak(silent);
+            
+            if (!initialGuidePlayed) {
+                initialGuidePlayed = true;
+            }
+        }, { once: true });
 
-    window.speechSynthesis.cancel(); // 기존 음성 모두 초기화 [중요]
-    const silent = new SpeechSynthesisUtterance("");
-    window.speechSynthesis.speak(silent);
-    
-    if (!initialGuidePlayed) {
-        initialGuidePlayed = true;
-    }
-}, { once: true });
+        function speak(text) {
+            window.speechSynthesis.cancel(); 
+            const utterance = new SpeechSynthesisUtterance(text);
+            const voices = window.speechSynthesis.getVoices();
 
-function speak(text) {
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    const voices = window.speechSynthesis.getVoices();
+            showSubtitle(text);
 
-    showSubtitle(text);
-    // 시각장애인 접근성에 최적화된 'Natural' 엔진 최우선 탐색
-    // (특히 Edge의 '민준' 또는 크롬의 'Google 한국어' 남성 음성)
-    const preferredVoice = voices.find(v => v.lang.includes('ko') && v.name.includes('Natural')) ||
-                           voices.find(v => v.lang.includes('ko') && v.name.includes('Minjun')) || 
-                           voices.find(v => v.lang.includes('ko') && v.name.includes('Google'));
+            const preferredVoice = voices.find(v => v.lang.includes('ko') && v.name.includes('Natural')) ||
+                                   voices.find(v => v.lang.includes('ko') && v.name.includes('Minjun')) || 
+                                   voices.find(v => v.lang.includes('ko') && v.name.includes('Google')) ||
+                                   voices.find(v => v.lang.includes('ko'));
 
-    if (preferredVoice) utterance.voice = preferredVoice;
-    utterance.lang = 'ko-KR';
+            if (preferredVoice) utterance.voice = preferredVoice;
+            utterance.lang = 'ko-KR';
 
-    // [핵심 조정] 중후하면서도 귀에 잘 들어오는 수치
-    utterance.rate = 0.9;   // 너무 느리면 정보 습득이 답답하고, 빠르면 놓치기 쉬움 (0.9가 적정)
-    utterance.pitch = 0.7;  // 0.8보다 조금 더 낮춰 깊은 울림을 강조
-    utterance.volume = 1.0;
+            utterance.rate = 0.9;   
+            utterance.pitch = 0.7;  
+            utterance.volume = 1.0;
 
-// 음성이 끝나면 자막을 숨기는 이벤트 리스너 [추가된 부분]
-    utterance.onend = function() {
-        subtitleEl.style.display = 'none';
-    };
-    window.speechSynthesis.speak(utterance);
-}
+            utterance.onend = function() {
+                subtitleEl.style.display = 'none';
+            };
+            window.speechSynthesis.speak(utterance);
+        }
 
         function showSubtitle(text) {
             subtitleEl.innerText = text;
@@ -233,55 +242,50 @@ function speak(text) {
             subtitleEl.style.opacity = 1;
         }
 
-       /*  // 3. 성물 터치 및 팝업 로직
         const popupData = {
-            dangjwa: { title: '당좌(撞座)', img: '당좌.png', desc: '당좌입니다. 국가의 안녕을 지키는 염원을 담고 있습니다.', adShort: '종을 치는 지점인 당좌는 여덟 잎의 연꽃무늬로 화려하게 장식되어 있습니다.', adLong: '당좌는 통합의 염원을 상징합니다. 중앙의 볼록한 지점은 힘의 응축을 보여주며 완벽한 균형미를 선사합니다.', color: '#d4af37' },
-            yeonroe: { title: '연뢰(蓮蕾)', img: '연뢰.png', desc: '연뢰입니다. 생명력과 풍요를 상징합니다.', adShort: '아홉 개의 연꽃 봉우리가 3행 3열로 정갈하게 솟아 있습니다.', adLong: '질서 정연하게 솟아오른 모습은 신라인들이 꿈꾼 조화로운 세계관을 상징합니다.', color: '#ffb7c5' },
-            bicheon: { title: '비천상(飛天像)', img: '비천상-좌.png', desc: '비천상입니다. 자비로운 해탈과 구제를 상징합니다.', adShort: '무릎을 꿇고 향로를 받쳐 든 채 구름 위를 날아오르는 우아한 모습입니다.', adLong: '머리 뒤로 솟구쳐 오르는 긴 옷자락은 종소리가 사방으로 퍼지는 맥놀이 현상을 시각화합니다.', color: '#a8dadc' },
-            yongnyu: { title: '용뉴(龍鈕)', img: '용뉴.png', desc: '용뉴입니다. 왕의 권위와 신성함을 상징합니다.', adShort: '한 마리의 황금 용이 네 발로 종의 어깨를 힘차게 움켜쥐고 있습니다.', adLong: '용 뒤에 수직으로 세워진 음관은 소리를 땅으로 전달하는 지혜의 통로입니다.', color: '#d4af37' }
+            dangjwa: { 
+                img: '당좌.png', 
+                title: '당좌(撞座): 호국과 통합', 
+                desc: '당좌입니다. 국가의 안녕을 지키고 백성의 마음을 하나로 모으는 염원을 담고 있습니다.', 
+                adShort: '에밀레종의 당좌는 종을 치는 최적의 과학적 위치에 있으며, 화려한 연꽃무늬가 기하학적 대칭을 이루어 성스러운 생동감을 자아냅니다.',
+                adLong: '가장 깊은 울림이 시작되는 당좌는 국가의 안녕과 통합의 염원을 상징합니다. 중앙의 볼록한 원형은 힘의 응축을, 이를 감싼 여덟 잎의 연꽃은 완벽한 균형미를 보여줍니다. 정교한 연꽃 곡선이 주는 시각적 안정감과 함께, 터치 시 심장을 울리는 웅장한 맥놀이 소리를 느껴보세요.',
+                color: '#d4af37' 
+            },
+            yeonroe: { 
+                img: '연뢰.png', 
+                title: '연뢰(蓮蕾): 생명의 봉우리', 
+                desc: '연뢰입니다. 만물의 탄생과 다산, 끊이지 않는 생명력과 풍요를 상징합니다.', 
+                adShort: '종 윗부분, 보상화 문양 안의 사각형 공간에 아홉 개의 연꽃 봉우리가 3행 3열로 정갈하게 솟아 있습니다. 매끄러운 곡선을 그리며 피어오르는 봉우리들은 만물의 탄생과 풍요로운 우주의 질서를 시각적으로 보여줍니다.',
+                adLong: '천상의 정원 같은 연뢰 영역은 신라의 조화로운 세계관을 상징합니다. 사각형 안의 아홉 봉우리는 번뇌가 씻긴 깨달음의 열매이며, 완벽한 수직·수평 배열로 정위감을 제공합니다. 터치할 때마다 들리는 맑은 타악 선율은 종의 거대한 울림을 준비하는 생명의 전주곡입니다.',
+                color: '#ffb7c5' 
+            },
+            bicheon: { 
+                img: '비천상.png', 
+                title: '비천상(飛天像): 해탈의 선율', 
+                desc: '비천상입니다. 중생의 번뇌를 씻어내고 자비로운 해탈과 구제를 상징합니다.', 
+                adShort: '종의 허리 부분, 구름 위를 날아오르는 비천상은 연꽃 향로를 든 채 우아하게 무릎을 꿇고 있습니다. 하늘로 솟구치는 긴 옷자락과 흩날리는 꽃잎들은 종의 신비로운 울림을 시각화하며 천상의 음악이 흐르는 듯한 분위기를 자아냅니다.',
+                adLong: '종의 여백을 채운 비천상은 자비로운 미소로 평온함을 전합니다. 하늘로 뻗은 가느다란 옷자락은 중력을 거스르는 역동적인 곡선으로 종소리의 맥놀이 현상을 시각화합니다. 주변의 보상화 문양은 부처님의 목소리를 향기로 묘사하며 공간에 리듬감을 더하고, 터치 시 해금 선율처럼 상승하는 기운의 사운드스케이프가 펼쳐집니다.',
+                color: '#a8dadc' 
+            },
+            yongnyu: { 
+                img: '용뉴.png', 
+                title: '용뉴(龍鈕): 권위와 울림', 
+                desc: '용뉴입니다. 왕의 권위와 신성함을 상징하며 종소리를 멀리 퍼지게 하는 지혜가 담겨 있습니다.', 
+                adShort: '종 맨 꼭대기의 용뉴는 황금 용이 네 발로 종의 어깨를 힘차게 움켜쥔 형상입니다. 입체적인 비늘은 금방이라도 포효할 듯 생생한 질감을 전하며, 그 뒤로 솟은 대나무 모양 음관은 소리를 땅으로 전달하는 지혜의 통로 역할을 합니다.',
+                adLong: '종의 정상부, 용뉴는 권위와 신성함이 응집된 공간입니다. C자형으로 굽은 역동적인 용의 몸체와 근육질의 앞발이 종을 견고하게 지탱하며, 등 뒤에 수직으로 솟은 대나무 마디 모양 음관은 정교한 대칭 문양으로 지혜의 깊이를 더합니다.',
+                color: '#d4af37' 
+            }
         };
-*/
-        // 1. 상세화된 데이터 객체 (요약/상세 버전 반영)
-const popupData = {
-    dangjwa: { 
-        img: '당좌.png', 
-        title: '당좌(撞座): 호국과 통합', 
-        desc: '당좌입니다. 국가의 안녕을 지키고 백성의 마음을 하나로 모으는 염원을 담고 있습니다.', 
-        adShort: '에밀레종의 당좌는 종을 치는 최적의 과학적 위치에 있으며, 화려한 연꽃무늬가 기하학적 대칭을 이루어 성스러운 생동감을 자아냅니다.',
-        adLong: '가장 깊은 울림이 시작되는 당좌는 국가의 안녕과 통합의 염원을 상징합니다. 중앙의 볼록한 원형은 힘의 응축을, 이를 감싼 여덟 잎의 연꽃은 완벽한 균형미를 보여줍니다. 정교한 연꽃 곡선이 주는 시각적 안정감과 함께, 터치 시 심장을 울리는 웅장한 맥놀이 소리를 느껴보세요.',
-        color: '#d4af37' 
-    },
-    yeonroe: { 
-        img: '연뢰.png', 
-        title: '연뢰(蓮蕾): 생명의 봉우리', 
-        desc: '연뢰입니다. 만물의 탄생과 다산, 끊이지 않는 생명력과 풍요를 상징합니다.', 
-        adShort: '종 윗부분, 보상화 문양 안의 사각형 공간에 아홉 개의 연꽃 봉우리가 3행 3열로 정갈하게 솟아 있습니다. 매끄러운 곡선을 그리며 피어오르는 봉우리들은 만물의 탄생과 풍요로운 우주의 질서를 시각적으로 보여줍니다.',
-        adLong: '천상의 정원 같은 연뢰 영역은 신라의 조화로운 세계관을 상징합니다. 사각형 안의 아홉 봉우리는 번뇌가 씻긴 깨달음의 열매이며, 완벽한 수직·수평 배열로 정위감을 제공합니다. 터치할 때마다 들리는 맑은 타악 선율은 종의 거대한 울림을 준비하는 생명의 전주곡입니다.',
-        color: '#ffb7c5' 
-    },
-    bicheon: { 
-        img: '비천상.png', 
-        title: '비천상(飛天像): 해탈의 선율', 
-        desc: '비천상입니다. 중생의 번뇌를 씻어내고 자비로운 해탈과 구제를 상징합니다.', 
-        adShort: '종의 허리 부분, 구름 위를 날아오르는 비천상은 연꽃 향로를 든 채 우아하게 무릎을 꿇고 있습니다. 하늘로 솟구치는 긴 옷자락과 흩날리는 꽃잎들은 종의 신비로운 울림을 시각화하며 천상의 음악이 흐르는 듯한 분위기를 자아냅니다.',
-        adLong: '종의 여백을 채운 비천상은 자비로운 미소로 평온함을 전합니다. 하늘로 뻗은 가느다란 옷자락은 중력을 거스르는 역동적인 곡선으로 종소리의 맥놀이 현상을 시각화합니다. 주변의 보상화 문양은 부처님의 목소리를 향기로 묘사하며 공간에 리듬감을 더하고, 터치 시 해금 선율처럼 상승하는 기운의 사운드스케이프가 펼쳐집니다.',
-        color: '#a8dadc' 
-    },
-    yongnyu: { 
-        img: '용뉴.png', 
-        title: '용뉴(龍鈕): 권위와 울림', 
-        desc: '용뉴입니다. 왕의 권위와 신성함을 상징하며 종소리를 멀리 퍼지게 하는 지혜가 담겨 있습니다.', 
-        adShort: '종 맨 꼭대기의 용뉴는 황금 용이 네 발로 종의 어깨를 힘차게 움켜쥔 형상입니다. 입체적인 비늘은 금방이라도 포효할 듯 생생한 질감을 전하며, 그 뒤로 솟은 대나무 모양 음관은 소리를 땅으로 전달하는 지혜의 통로 역할을 합니다.',
-        adLong: '종의 정상부, 용뉴는 권위와 신성함이 응집된 공간입니다. C자형으로 굽은 역동적인 용의 몸체와 근육질의 앞발이 종을 견고하게 지탱하며, 등 뒤에 수직으로 솟은 대나무 마디 모양 음관은 정교한 대칭 문양으로 지혜의 깊이를 더합니다.',
-        color: '#d4af37' 
-    }
-};
-
 
         function showPopup(type, event) {
             if (event) event.stopPropagation();
+            
+            window.speechSynthesis.cancel();
+            subtitleEl.style.display = 'none';
+
             currentActiveType = type;
             popupClickCount = 0;
+            isEnteringPopup = true; 
 
             const data = popupData[type];
             document.getElementById('popup-img').src = data.img;
@@ -290,7 +294,6 @@ const popupData = {
 
             speak(data.desc);
 
-            // 상태 업데이트
             const audio = document.getElementById(`audio-${type}`);
             if(audio) { audio.currentTime = 0; audio.play(); }
             state[type] = true;
@@ -298,34 +301,100 @@ const popupData = {
             
             createRipple(event, data.color);
             checkComplete();
+
+            setTimeout(() => { 
+                document.querySelector('#image-overlay .close-btn').focus(); 
+                isEnteringPopup = false; 
+            }, 100);
         }
 
-        // 팝업 내 추가 클릭 시 상세 해설
-        document.getElementById('image-overlay').onclick = function(e) {
+        function handleCloseFocus(layer) {
+            if (isEnteringPopup) return;
+            speak('전체화면으로 돌아가기');
+        }
+
+        function handleZoneKey(event, type) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                showPopup(type, event);
+            }
+        }
+
+        function handleCloseKey(event, layer) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                if (layer === 'popup') closePopup();
+                else if (layer === 'video') closeVideo();
+            }
+        }
+
+        // --- 롱 프레스(Long Press) 이벤트 처리 시스템 시작 ---
+        const overlayEl = document.getElementById('image-overlay');
+
+        function startPress(e) {
+            // X 버튼(close-btn) 영역을 직접 누른 경우는 기본 동작을 따름
+            if (e.target.classList.contains('close-btn')) return;
+
+            isLongPress = false;
+            // 지정한 시간(0.8초) 동안 누르고 있으면 전체화면으로 돌아가기 실행
+            pressTimer = setTimeout(() => {
+                isLongPress = true;
+                closePopup(); 
+            }, LONG_PRESS_DURATION);
+        }
+
+        function endPress(e) {
+            if (pressTimer) clearTimeout(pressTimer);
+            
+            // 만약 롱 프레스 동작이 처리되었다면 클릭 연쇄 이벤트를 차단
+            if (isLongPress) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }
+
+        // 모바일 터치 이벤트 바인딩
+        overlayEl.addEventListener('touchstart', startPress, { passive: false });
+        overlayEl.addEventListener('touchend', endPress, { passive: false });
+        overlayEl.addEventListener('touchmove', () => { if (pressTimer) clearTimeout(pressTimer); });
+
+        // PC 마우스 이벤트 바인딩
+        overlayEl.addEventListener('mousedown', startPress);
+        overlayEl.addEventListener('mouseup', endPress);
+        overlayEl.addEventListener('mouseleave', () => { if (pressTimer) clearTimeout(pressTimer); });
+
+        // 기존 단일 클릭 리스너 수정
+        overlayEl.onclick = function(e) {
             if (e.target.classList.contains('close-btn') || !currentActiveType) return;
+            
+            // 롱 프레스 상태였다면 일반 클릭 해설이 실행되지 않도록 완전 방어
+            if (isLongPress) {
+                isLongPress = false;
+                return;
+            }
+
             const data = popupData[currentActiveType];
             popupClickCount++;
 
             if (popupClickCount === 1) speak(data.adShort);
             else speak(data.adLong);
         };
+        // --- 롱 프레스(Long Press) 이벤트 처리 시스템 끝 ---
 
-    function closePopup() {
-    // 1. 현재 출력 중인 안내 음성 중단
-    window.speechSynthesis.cancel();
+        function closePopup() {
+            window.speechSynthesis.cancel();
+            document.getElementById('image-overlay').style.display = 'none'; 
+            subtitleEl.style.display = 'none';
 
-    // 2. 팝업창 및 자막 숨김
-    document.getElementById('image-overlay').style.display = 'none'; 
-    subtitleEl.style.display = 'none';
+            // 전체화면 복귀 안내 발화 수행
+            speak('전체화면으로 돌아가기');
 
-    // 3. 포커스 복원 (접근성 유지)
-    if (currentActiveType) {
-        const zone = document.querySelector(`.${currentActiveType}-zone`);
-        if (zone) zone.focus();
-    }
-}
+            if (currentActiveType) {
+                const zone = document.querySelector(`.${currentActiveType}-zone`);
+                if (zone) zone.focus();
+            }
+        }
 
-        // 4. 정보 섹션 안내
         function speakInfo(section) {
             let text = "";
             if(section === 'work') text = "작품 설명입니다. 성덕대왕신종의 염원을 현대 기술로 재구성한 전시입니다.";
@@ -334,7 +403,6 @@ const popupData = {
             if (text) speak(text);
         }
 
-        // 5. 완료 및 리셋 로직
         function checkComplete() {
             if (state.dangjwa && state.bicheon && state.yeonroe && state.yongnyu) {
                 bellImg.classList.add('active');
@@ -348,14 +416,20 @@ const popupData = {
 
         function showVideo() {
             window.speechSynthesis.cancel();
+            isEnteringPopup = true; 
             document.getElementById('video-overlay').style.display = 'flex';
             document.getElementById('video-player-container').innerHTML = `
                 <video id="main-video" controls autoplay onended="closeVideo()">
                     <source src="Wind_Over_the_Peak.mp4" type="video/mp4">
                 </video>`;
+            setTimeout(() => { 
+                document.querySelector('#video-overlay .close-btn').focus(); 
+                isEnteringPopup = false;
+            }, 100);
         }
 
         function closeVideo() {
+            window.speechSynthesis.cancel();
             document.getElementById('video-overlay').style.display = 'none';
             document.getElementById('video-player-container').innerHTML = '';
             resetExperience();
@@ -369,6 +443,7 @@ const popupData = {
         }
 
         function createRipple(event, color) {
+            if (!event || !event.target || event.key) return;
             const rect = event.target.getBoundingClientRect();
             const parentRect = document.querySelector('.interaction-area').getBoundingClientRect();
             const ripple = document.createElement('div');
