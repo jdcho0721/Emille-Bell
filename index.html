@@ -6,31 +6,37 @@
     <title>에밀레: 천년의 울림 - 철학적 여정</title>
     <style>
         :root { --gold: #d4af37; --sky: #a8dadc; --lotus: #ffb7c5; --bg: #0a0a0c; }
-        body { background-color: var(--bg); color: white; font-family: 'Pretendard', sans-serif; margin: 0; overflow-y: auto; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        body { background-color: var(--bg); color: white; font-family: 'Pretendard', sans-serif; margin: 0; overflow-y: auto; display: flex; flex-direction: column; align-items: center; min-height: 100vh; font-size: 14px; }
         
-        .story-header { padding: 20px; text-align: center; z-index: 10; max-width: 700px; }
-        .story-text { font-size: 1.1rem; line-height: 1.6; color: #ccc; min-height: 4em; transition: all 0.5s; margin-bottom: 10px; }
+        .story-header { padding: 15px; text-align: center; z-index: 10; max-width: 700px; }
+        .story-header h1 { font-size: 1.6rem; margin: 10px 0 5px 0; }
+        .story-text { font-size: 0.95rem; line-height: 1.5; color: #ccc; min-height: 3em; transition: all 0.5s; margin-bottom: 5px; }
         .highlight { color: var(--gold); font-weight: bold; }
 
+        /* 모바일에서 이미지가 꽉 차도록 너비 조정 */
         .interaction-area {
-            position: relative; width: 90vw; max-width: 600px;
-            border-radius: 15px; overflow: hidden; border: 1px solid rgba(212, 175, 55, 0.3);
+            position: relative; width: 100vw; max-width: 600px;
+            border-radius: 0; overflow: hidden; border: none;
             box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
         }
+        @media (min-width: 600px) {
+            .interaction-area { width: 90vw; border-radius: 15px; border: 1px solid rgba(212, 175, 55, 0.3); }
+        }
+
         .full-bell-img { width: 100%; height: auto; display: block; transition: all 0.5s; filter: grayscale(0.5); }
         .full-bell-img.active { filter: grayscale(0) brightness(1.1); }
         
         /* 성덕대왕신종 설명 버튼 스타일 */
         .info-button-container {
-            margin-top: 20px;
+            margin-top: 15px;
             text-align: center;
         }
         .info-btn {
             background: transparent;
             color: var(--gold);
             border: 2px solid var(--gold);
-            padding: 12px 24px;
-            font-size: 1.1rem;
+            padding: 10px 20px;
+            font-size: 0.95rem;
             font-weight: bold;
             border-radius: 8px;
             cursor: pointer;
@@ -42,12 +48,12 @@
             box-shadow: 0 0 15px var(--gold);
         }
 
-        /* 자막 스타일 */
+        /* 자막 스타일: 화면 맨 아래쪽으로 밀착 및 패딩 최적화 */
         #subtitle-overlay {
-            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-            width: 85%; max-width: 700px; background: rgba(0, 0, 0, 0.85); color: #fff;
-            padding: 18px 28px; border-radius: 12px; text-align: center; font-size: 1.25rem;
-            line-height: 1.6; z-index: 1000; display: none; border: 2px solid var(--gold);
+            position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 700px; background: rgba(0, 0, 0, 0.9); color: #fff;
+            padding: 12px 20px; border-radius: 8px; text-align: center; font-size: 1rem;
+            line-height: 1.5; z-index: 1000; display: none; border: 1.5px solid var(--gold);
             pointer-events: none; word-break: keep-all; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
@@ -65,21 +71,24 @@
 
         #image-overlay, #bell-info-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 200; display: none; 
+            background: rgba(0,0,0,0.95); z-index: 200; display: none; 
             flex-direction: column; justify-content: center; align-items: center;
             user-select: none; -webkit-user-select: none;
         }
-        .popup-content { max-width: 80%; text-align: center; pointer-events: none; position: relative; }
-        /* 텍스트 팝업용 스크롤 및 정렬 스타일 */
-        .popup-text-content { max-width: 85%; max-height: 70vh; overflow-y: auto; text-align: left; background: rgba(20, 20, 25, 0.95); padding: 30px; border-radius: 15px; border: 1px solid var(--gold); pointer-events: auto; }
-        .popup-text-content p { color: #f0f0f0; line-height: 1.8; font-size: 1.15rem; margin-bottom: 15px; word-break: keep-all; }
+        .popup-content { max-width: 90%; text-align: center; pointer-events: none; position: relative; }
         
-        .popup-img-container { position: relative; display: inline-block; max-width: 90%; max-height: 50vh; pointer-events: auto; }
-        .popup-img { width: 100%; max-height: 50vh; object-fit: contain; border: 2px solid var(--gold); border-radius: 10px; margin-top: 10px; margin-bottom: 10px; }
+        /* 팝업 텍스트 크기 및 여백 조정 */
+        .popup-text-content { max-width: 85%; max-height: 75vh; overflow-y: auto; text-align: left; background: rgba(20, 20, 25, 0.95); padding: 20px; border-radius: 12px; border: 1px solid var(--gold); pointer-events: auto; }
+        .popup-text-content h2 { font-size: 1.3rem; }
+        .popup-text-content p { color: #f0f0f0; line-height: 1.6; font-size: 0.95rem; margin-bottom: 12px; word-break: keep-all; }
+        
+        .popup-img-container { position: relative; display: inline-block; max-width: 95%; max-height: 45vh; pointer-events: auto; }
+        .popup-img { width: 100%; max-height: 45vh; object-fit: contain; border: 2px solid var(--gold); border-radius: 10px; margin-top: 10px; margin-bottom: 10px; }
+        #popup-title { font-size: 1.3rem; }
 
         /* 미디어 로고 버튼 스타일 */
         .video-logo-btn {
-            position: absolute; bottom: 25px; right: 15px; width: 55px; height: 55px;
+            position: absolute; bottom: 20px; right: 10px; width: 48px; height: 48px;
             background: rgba(10, 10, 12, 0.85); border: 2px solid var(--gold); border-radius: 50%;
             cursor: pointer; display: flex; justify-content: center; align-items: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.6); transition: all 0.3s ease; z-index: 210;
@@ -88,41 +97,42 @@
         .video-logo-btn:hover, .video-logo-btn:focus {
             transform: scale(1.15); background: var(--gold); box-shadow: 0 0 20px var(--gold);
         }
-        .video-logo-btn svg { width: 24px; height: 24px; fill: var(--gold); transition: all 0.3s ease; }
+        .video-logo-btn svg { width: 20px; height: 20px; fill: var(--gold); transition: all 0.3s ease; }
         .video-logo-btn:hover svg, .video-logo-btn:focus svg { fill: #0a0a0c; }
 
-        .progress-bar { display: flex; gap: 10px; margin: 20px 0; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; background: #333; transition: 0.5s; }
+        .progress-bar { display: flex; gap: 8px; margin: 15px 0; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: #333; transition: 0.5s; }
         .dot.active { box-shadow: 0 0 10px currentColor; }
 
+        /* 하단 상세 섹션 모바일 크기 최적화 */
         .info-section { 
             max-width: 800px; 
             width: 90vw; 
-            padding: 60px 0; 
+            padding: 30px 0 60px 0; 
             border-top: 2px solid rgba(212, 175, 55, 0.3); 
-            margin-top: 40px; 
+            margin-top: 25px; 
         }
-        .info-title { color: var(--gold); font-size: 1.5rem; margin-bottom: 15px; border-left: 4px solid var(--gold); padding-left: 15px; cursor: help; outline: none; }
+        .info-title { color: var(--gold); font-size: 1.2rem; margin-bottom: 10px; border-left: 3px solid var(--gold); padding-left: 12px; cursor: help; outline: none; }
         .info-title:focus { background: rgba(212, 175, 55, 0.1); }
 
         .info-content { 
             color: #f0f0f0; 
-            line-height: 1.9; 
-            margin-bottom: 50px; 
-            font-size: 1.3rem; 
+            line-height: 1.7; 
+            margin-bottom: 30px; 
+            font-size: 0.95rem; 
             cursor: help; 
             word-break: keep-all; 
             outline: none;
         }
-        .info-content p { margin: 0 0 15px 0; text-indent: 5px; }
+        .info-content p { margin: 0 0 12px 0; text-indent: 5px; }
         .info-content:focus { background: rgba(255, 255, 255, 0.05); }
 
         .guide-list { 
-            margin: 20px 0; 
-            padding-left: 30px; 
+            margin: 15px 0; 
+            padding-left: 20px; 
             color: #e0e0e0; 
-            font-size: 1.25rem; 
-            line-height: 2.2; 
+            font-size: 0.95rem; 
+            line-height: 1.8; 
             list-style-type: disc; 
         }
 
@@ -130,8 +140,8 @@
         #video-overlay video { width: 100%; height: 100%; object-fit: contain; }
         
         .close-btn { 
-            position: absolute; top: 20px; right: 20px; color: white; transition: all 0.3s ease;
-            cursor: pointer; font-size: 40px; z-index: 251; outline: none; display: inline-block; padding: 10px; pointer-events: auto;
+            position: absolute; top: 15px; right: 15px; color: white; transition: all 0.3s ease;
+            cursor: pointer; font-size: 32px; z-index: 251; outline: none; display: inline-block; padding: 8px; pointer-events: auto;
         }
         .close-btn:hover, .close-btn:focus { color: var(--gold); text-shadow: 0 0 10px var(--gold); transform: scale(1.1); }
         #video-overlay .close-btn { z-index: 351; }
@@ -216,7 +226,7 @@
                 </button>
             </div>
             <h2 id="popup-title" style="color: var(--gold); margin-bottom: 5px;"></h2>
-            <p style="color: #999; margin-top: 20px; font-size: 1.05rem; line-height: 1.5;">
+            <p style="color: #999; margin-top: 15px; font-size: 0.9rem; line-height: 1.4;">
                 배경 짧게 터치: 상세 고품질 해설 재생
             </p>
         </div>
@@ -234,7 +244,7 @@
             <p>우리나라 통일신라시대 범종이다. 높이 3.66m, 입지름 2.27m, 두께 11∼25㎝이며, 무게는 18.9톤이다.</p>
             <p>신라 혜공왕 771년에 완성하였다. 쇳물과 함께 아기를 시주하여 만들었는데 맑은 종소리에는 "에밀레" 하는 아기의 울음소리가 섞여 나왔다는 설화로 인해 에밀레종이라고도 불리운다.</p>
             <p>종의 맨 위에는 소리의 울림을 도와주는 음통(音筒)이 있는데, 이것은 우리나라 동종에서만 찾아볼 수 있는 독특한 구조이다. 종을 매다는 고리 역할을 하는 용뉴는 용머리 모양으로 조각되어 있다. 종 몸체에는 상하에 넓은 띠를 둘러 그 안에 꽃무늬를 새겨 넣었고, 종의 어깨 밑으로는 4곳에 연꽃 모양으로 돌출된 9개의 연꽃봉우리를 사각형의 연곽(蓮廓)이 둘러싸고 있다. 유곽 아래로 2쌍의 비천상이 있고, 그 사이에는 종을 치는 부분인 당좌가 연꽃 모양으로 마련되어 있다.</p>
-            <p style="color: var(--gold); text-align: center; font-weight: bold; margin-top: 25px; font-size: 1rem;">[ 우측 상단 X 버튼을 누르면 이전 화면으로 돌아갑니다 ]</p>
+            <p style="color: var(--gold); text-align: center; font-weight: bold; margin-top: 20px; font-size: 0.9rem;">[ 우측 상단 X 버튼을 누르면 이전 화면으로 돌아갑니다 ]</p>
         </div>
     </div>
 
@@ -450,7 +460,6 @@
             document.getElementById('popup-img').src = data.img;
             document.getElementById('popup-title').innerText = data.title;
 
-            // 웹 접근성 향상: 비디오 버튼의 스크린 리더용 안내 문구 동적 매칭 ([성물 이름] 사운드스케이프 감상하기)
             const videoBtn = document.getElementById('popup-video-btn');
             videoBtn.setAttribute('aria-label', `${data.name} 사운드스케이프 감상하기`);
 
@@ -483,7 +492,6 @@
             }, 100);
         }
 
-        // 비디오 버튼 마우스 오버 / 초점 획득 시 보이스 멘트 커스텀 함수
         function speakPopupVideoGuide() {
             if (isEnteringPopup || !currentActiveType) return;
             const targetName = popupData[currentActiveType].name;
