@@ -20,6 +20,28 @@
         .full-bell-img { width: 100%; height: auto; display: block; transition: all 0.5s; filter: grayscale(0.5); }
         .full-bell-img.active { filter: grayscale(0) brightness(1.1); }
         
+        /* 추가: 성덕대왕신종 설명 버튼 스타일 */
+        .info-button-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .info-btn {
+            background: transparent;
+            color: var(--gold);
+            border: 2px solid var(--gold);
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .info-btn:hover, .info-btn:focus {
+            background: rgba(212, 175, 55, 0.2);
+            box-shadow: 0 0 15px var(--gold);
+        }
+
         /* 자막 스타일 */
         #subtitle-overlay {
             position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
@@ -41,13 +63,17 @@
         .yeonroe-left { left: 32%; margin-left: -5%; }
         .yeonroe-right { left: 68%; margin-left: -5%; }
 
-        #image-overlay {
+        #image-overlay, #bell-info-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); z-index: 200; display: none; 
             flex-direction: column; justify-content: center; align-items: center;
             user-select: none; -webkit-user-select: none;
         }
         .popup-content { max-width: 80%; text-align: center; pointer-events: none; }
+        /* 추가: 텍스트 팝업용 스크롤 및 정렬 스타일 */
+        .popup-text-content { max-width: 85%; max-height: 70vh; overflow-y: auto; text-align: left; background: rgba(20, 20, 25, 0.95); padding: 30px; border-radius: 15px; border: 1px solid var(--gold); pointer-events: auto; }
+        .popup-text-content p { color: #f0f0f0; line-height: 1.8; font-size: 1.15rem; margin-bottom: 15px; word-break: keep-all; }
+        
         .popup-img { max-width: 90%; max-height: 50vh; object-fit: contain; border: 2px solid var(--gold); border-radius: 10px; margin-top: 10px; margin-bottom: 10px; }
 
         .progress-bar { display: flex; gap: 10px; margin: 20px 0; }
@@ -119,6 +145,10 @@
         <div id="ripple-container"></div>
     </div>
 
+    <div class="info-button-container">
+        <button class="info-btn" id="bell-info-btn" onclick="openBellInfo(event)" onkeydown="handleBellInfoKey(event)">성덕대왕신종 정보 보기</button>
+    </div>
+
     <div class="progress-bar">
         <div id="dot-dangjwa" class="dot"></div>
         <div id="dot-bicheon" class="dot"></div>
@@ -166,6 +196,24 @@
         </div>
     </div>
 
+    <div id="bell-info-overlay" role="dialog" aria-modal="true">
+        <span class="close-btn" 
+              onclick="closeBellInfo()" 
+              onmouseenter="speakText('전체화면으로 돌아가기')" 
+              onfocus="speakText('전체화면으로 돌아가기')"
+              onkeydown="handleCloseKey(event, 'bell-info')"
+              role="button" 
+              tabindex="0" 
+              aria-label="닫기 및 전체화면으로 돌아가기">&times;</span>
+        <div class="popup-text-content">
+            <h2 style="color: var(--gold); margin-top: 0; border-bottom: 2px solid var(--gold); padding-bottom: 10px;">성덕대왕신종 (聖德大王神鍾)</h2>
+            <p>우리나라 통일신라시대 범종이다. 높이 3.66m, 입지름 2.27m, 두께 11∼25㎝이며, 무게는 18.9톤이다.</p>
+            <p>신라 혜공왕 771년에 완성하였다. 쇳물과 함께 아기를 시주하여 만들었는데 맑은 종소리에는 "에밀레" 하는 아기의 울음소리가 섞여 나왔다는 설화로 인해 에밀레종이라고도 불리운다.</p>
+            <p>종의 맨 위에는 소리의 울림을 도와주는 음통(音筒)이 있는데, 이것은 우리나라 동종에서만 찾아볼 수 있는 독특한 구조이다. 종을 매다는 고리 역할을 하는 용뉴는 용머리 모양으로 조각되어 있다. 종 몸체에는 상하에 넓은 띠를 둘러 그 안에 꽃무늬를 새겨 넣었고, 종의 어깨 밑으로는 4곳에 연꽃 모양으로 돌출된 9개의 연꽃봉우리를 사각형의 연곽(蓮廓)이 둘러싸고 있다. 유곽 아래로 2쌍의 비천상이 있고, 그 사이에는 종을 치는 부분인 당좌가 연꽃 모양으로 마련되어 있다.</p>
+            <p style="color: var(--gold); text-align: center; font-weight: bold; margin-top: 25px; font-size: 1rem;">[ 화면을 길게 누르거나 우측 상단 X 버튼을 누르면 전체화면으로 돌아갑니다 ]</p>
+        </div>
+    </div>
+
     <div id="video-overlay" role="dialog" aria-modal="true">
         <span class="close-btn" 
               onclick="closeVideo()" 
@@ -178,7 +226,8 @@
         <div id="video-player-container"></div>
     </div>
 
-    <audio id="audio-dangjwa" src="bell_sound.mp3"></audio>
+    <audio id="audio-dangjwa" src="bell_sound.mp3" loop></audio>
+    
     <audio id="audio-bicheon" src="bicheon_sound.mp3"></audio>
     <audio id="audio-yeonroe" src="yeonroe_sound.mp3"></audio>
     <audio id="audio-yongnyu" src="bell_sound.mp3"></audio>
@@ -201,8 +250,26 @@
         let isLongPress = false;
         const LONG_PRESS_DURATION = 800;
 
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+        const targetAudioIds = ['audio-dangjwa', 'audio-yongnyu'];
+
+        function initAudioAmplifier() {
+            if (audioCtx) return;
+            audioCtx = new AudioContext();
+            targetAudioIds.forEach(id => {
+                const audioElement = document.getElementById(id);
+                if (!audioElement) return;
+                const source = audioCtx.createMediaElementSource(audioElement);
+                const gainNode = audioCtx.createGain();
+                gainNode.gain.value = 3.0; 
+                source.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+            });
+        }
+
         document.body.addEventListener('click', function(e) {
-            if (e.target.classList.contains('touch-zone')) {
+            if (e.target.classList.contains('touch-zone') || e.target.id === 'bell-info-btn') {
                 initialGuidePlayed = true; 
                 return;
             }
@@ -214,7 +281,7 @@
             window.speechSynthesis.cancel();
             narratorPlayer.pause();
             narratorPlayer.currentTime = 0;
-            document.querySelectorAll('audio:not(#narrator-player)').forEach(audio => {
+            document.querySelectorAll('audio:not(#narrator-player):not(#audio-dangjwa)').forEach(audio => {
                 audio.pause();
                 audio.currentTime = 0;
             });
@@ -223,12 +290,10 @@
         function playNarratorAudio(fileUrl, fallbackText) {
             stopAllAudio();
             showSubtitle(fallbackText);
-
             narratorPlayer.src = fileUrl;
             narratorPlayer.play().catch(err => {
                 speakText(fallbackText);
             });
-
             narratorPlayer.onended = function() {
                 subtitleEl.style.display = 'none';
             };
@@ -238,20 +303,20 @@
             window.speechSynthesis.cancel(); 
             const utterance = new SpeechSynthesisUtterance(text);
             const voices = window.speechSynthesis.getVoices();
-
             showSubtitle(text);
 
-            const preferredVoice = voices.find(v => v.lang.includes('ko') && v.name.includes('Natural')) ||
-                                   voices.find(v => v.lang.includes('ko') && v.name.includes('Minjun')) || 
-                                   voices.find(v => v.lang.includes('ko') && v.name.includes('Google')) ||
-                                   voices.find(v => v.lang.includes('ko'));
+            const preferredVoice = voices.find(v => v.lang.includes('ko') && v.name.includes('Natural')) || 
+                                   voices.find(v => v.lang.includes('ko') && v.name.includes('Neural')) ||  
+                                   voices.find(v => v.lang.includes('ko') && v.name.includes('Yunjin')) ||  
+                                   voices.find(v => v.lang.includes('ko') && v.name.includes('Minjun')) ||  
+                                   voices.find(v => v.lang.includes('ko') && v.name.includes('Google')) ||  
+                                   voices.find(v => v.lang.includes('ko'));                                  
 
             if (preferredVoice) utterance.voice = preferredVoice;
             utterance.lang = 'ko-KR';
-
-            utterance.rate = 0.85;   
-            utterance.pitch = 0.85;  
-            utterance.volume = 1.0;
+            utterance.rate = 0.95;   
+            utterance.pitch = 1.0;   
+            utterance.volume = 1.0;  
 
             utterance.onend = function() {
                 subtitleEl.style.display = 'none';
@@ -263,6 +328,40 @@
             subtitleEl.innerText = text;
             subtitleEl.style.display = 'block';
             subtitleEl.style.opacity = 1;
+        }
+
+        /* 추가: 성덕대왕신종 정보창 제어 함수 */
+        function openBellInfo(event) {
+            if (event) event.stopPropagation();
+            stopAllAudio();
+            subtitleEl.style.display = 'none';
+            isEnteringPopup = true;
+
+            document.getElementById('bell-info-overlay').style.display = 'flex';
+            
+            // 정보창 요약 내용을 음성으로 안내
+            const summaryText = "성덕대왕신종 설명입니다. 우리나라에 남아있는 가장 큰 종으로 통일신라 범종의 정수입니다. 혜공왕 칠칠일년에 완공되었으며 에밀레종으로도 불립니다. 음통과 용뉴, 비천상과 당좌의 조화가 아름다운 국보입니다. 상세 내용은 화면의 텍스트를 참조바랍니다.";
+            speakText(summaryText);
+
+            setTimeout(() => { 
+                document.querySelector('#bell-info-overlay .close-btn').focus(); 
+                isEnteringPopup = false; 
+            }, 100);
+        }
+
+        function closeBellInfo() {
+            stopAllAudio();
+            document.getElementById('bell-info-overlay').style.display = 'none';
+            subtitleEl.style.display = 'none';
+            speakText('전체화면입니다');
+            document.getElementById('bell-info-btn').focus();
+        }
+
+        function handleBellInfoKey(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openBellInfo(event);
+            }
         }
 
         const popupData = {
@@ -306,8 +405,8 @@
                 audioShort: 'yongnyu_short.mp3',
                 audioLong: 'yongnyu_long.mp3',
                 desc: '용뉴입니다. 왕의 권위와 신성함을 상징하며 종소리를 멀리 퍼지게 하는 지혜가 담겨 있습니다.', 
-                adShort: '종 맨 꼭대기의 용뉴는 황금 용이 네 발로 종의 어깨를 힘차게 움켜쥔 형상입니다. 입체적인 비늘은 금방이라도 포효할 듯 생생한 질감을 전하며, 그 뒤로 솟은 대나무 모양 음관은 소리를 땅으로 전달하는 지혜의 통로 역할을 합니다.',
-                adLong: '종의 정상부, 용뉴는 권위와 신성함이 응집된 공간입니다. C자형으로 굽은 역동적인 용의 몸체와 근육질의 앞발이 종을 견고하게 지탱하며, 등 뒤에 수직으로 솟은 대나무 마디 모양 음관은 정교한 대칭 문양으로 지혜의 깊이를 더합니다.',
+                adShort: '종 맨 꼭대기의 용뉴는 용이 네 발을 힘차게 뻗어 종 윗면을 딛고 있으며,역동적인 모습을 하고 있습니다. 그 뒤로 솟은 대나무 모양 음관은 소리를 땅으로 전달하는 지혜의 통로 역할을 합니다.',
+                adLong: ' 용뉴는 단순히 종을 매달기 위한 기능적 고리에 그치지 않고, 하늘과 땅을 연결하고 부처님의 가르침을 널리 퍼뜨리는 신성한 영물로서의 종교적·예술적 가치를 완벽하게 구현하고 있습니다',
                 color: '#d4af37' 
             }
         };
@@ -329,7 +428,18 @@
             playNarratorAudio(data.audioDesc, data.desc);
 
             const audio = document.getElementById(`audio-${type}`);
-            if(audio) { audio.currentTime = 0; audio.play(); }
+            if(audio) { 
+                if (type === 'dangjwa') {
+                    if (audio.paused) {
+                        audio.currentTime = 0;
+                        audio.play();
+                    }
+                } else {
+                    audio.currentTime = 0; 
+                    audio.play(); 
+                }
+            }
+
             state[type] = true;
             document.getElementById(`dot-${type}`).classList.add('active');
             
@@ -359,18 +469,21 @@
                 event.preventDefault();
                 if (layer === 'popup') closePopup();
                 else if (layer === 'video') closeVideo();
+                else if (layer === 'bell-info') closeBellInfo();
             }
         }
 
+        // 롱 프레스 가이드라인 적용 인터페이스 타겟팅
         const overlayEl = document.getElementById('image-overlay');
+        const infoOverlayEl = document.getElementById('bell-info-overlay');
 
         function startPress(e) {
             if (e.target.classList.contains('close-btn')) return;
             isLongPress = false;
-
             pressTimer = setTimeout(() => {
                 isLongPress = true;
-                closePopup(); 
+                if(overlayEl.style.display === 'flex') closePopup();
+                if(infoOverlayEl.style.display === 'flex') closeBellInfo();
             }, LONG_PRESS_DURATION);
         }
 
@@ -382,24 +495,21 @@
             }
         }
 
-        overlayEl.addEventListener('touchstart', startPress, { passive: false });
-        overlayEl.addEventListener('touchend', endPress, { passive: false });
-        overlayEl.addEventListener('touchmove', () => { if (pressTimer) clearTimeout(pressTimer); });
-
-        overlayEl.addEventListener('mousedown', startPress);
-        overlayEl.addEventListener('mouseup', endPress);
-        overlayEl.addEventListener('mouseleave', () => { if (pressTimer) clearTimeout(pressTimer); });
+        [overlayEl, infoOverlayEl].forEach(el => {
+            el.addEventListener('touchstart', startPress, { passive: false });
+            el.addEventListener('touchend', endPress, { passive: false });
+            el.addEventListener('touchmove', () => { if (pressTimer) clearTimeout(pressTimer); });
+            el.addEventListener('mousedown', startPress);
+            el.addEventListener('mouseup', endPress);
+            el.addEventListener('mouseleave', () => { if (pressTimer) clearTimeout(pressTimer); });
+        });
 
         overlayEl.onclick = function(e) {
             if (e.target.classList.contains('close-btn') || !currentActiveType) return;
-            if (isLongPress) {
-                isLongPress = false;
-                return;
-            }
+            if (isLongPress) { isLongPress = false; return; }
 
             const data = popupData[currentActiveType];
             popupClickCount++;
-
             if (popupClickCount === 1) {
                 playNarratorAudio(data.audioShort, data.adShort);
             } else {
@@ -407,14 +517,11 @@
             }
         };
 
-        // [수정 핵심 부분] X 버튼 클릭이나 롱 프레스로 빠져나갔을 때 "전체화면입니다" 출력
         function closePopup() {
             stopAllAudio();
             document.getElementById('image-overlay').style.display = 'none'; 
             subtitleEl.style.display = 'none';
-
             speakText('전체화면입니다');
-
             if (currentActiveType) {
                 const zone = document.querySelector(`.${currentActiveType}-zone`);
                 if (zone) zone.focus();
@@ -442,6 +549,9 @@
 
         function showVideo() {
             stopAllAudio();
+            const dangjwaAudio = document.getElementById('audio-dangjwa');
+            if(dangjwaAudio) { dangjwaAudio.pause(); dangjwaAudio.currentTime = 0; }
+
             isEnteringPopup = true; 
             document.getElementById('video-overlay').style.display = 'flex';
             document.getElementById('video-player-container').innerHTML = `
@@ -458,7 +568,6 @@
             stopAllAudio();
             document.getElementById('video-overlay').style.display = 'none';
             document.getElementById('video-player-container').innerHTML = '';
-            
             speakText('전체화면입니다');
             resetExperience();
         }
