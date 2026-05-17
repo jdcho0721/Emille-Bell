@@ -48,13 +48,27 @@
             box-shadow: 0 0 15px var(--gold);
         }
 
-        /* 자막 스타일: 화면 맨 아래쪽으로 밀착 및 패딩 최적화 */
+        /* [수정] 긴 자막 대응을 위한 스크롤바 및 최대 높이 설정 */
         #subtitle-overlay {
             position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 700px; background: rgba(0, 0, 0, 0.9); color: #fff;
+            width: 90%; max-width: 700px; max-height: 25vh; background: rgba(0, 0, 0, 0.93); color: #fff;
             padding: 12px 20px; border-radius: 8px; text-align: center; font-size: 1rem;
             line-height: 1.5; z-index: 1000; display: none; border: 1.5px solid var(--gold);
-            pointer-events: none; word-break: keep-all; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            pointer-events: auto; word-break: keep-all; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            overflow-y: auto; box-sizing: border-box;
+        }
+
+        /* 자막 스크롤바 스타일 커스텀 */
+        #subtitle-overlay::-webkit-scrollbar {
+            width: 5px;
+        }
+        #subtitle-overlay::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+        #subtitle-overlay::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 3px;
         }
 
         .touch-zone { position: absolute; border-radius: 50%; z-index: 10; cursor: pointer; border: 2px dashed rgba(212, 175, 55, 0.5); transition: all 0.3s; outline: none; }
@@ -76,7 +90,7 @@
             user-select: none; -webkit-user-select: none;
         }
 
-        /* 성물 상세 해설 팝업 박스 기본 설정 */
+        /* 성물 해설창 레이아웃 박스 */
         .popup-content { 
             max-width: 90%; 
             width: 450px;
@@ -93,7 +107,7 @@
             pointer-events: auto;
         }
 
-        /* [수정] 성물 상세 팝업용 내부 스크롤 영역 생성 및 스크롤바 허용 */
+        /* 팝업 내부 텍스트 및 상세 콘텐츠 스크롤 영역 생성 */
         .popup-scroll-area {
             width: 100%;
             overflow-y: auto;
@@ -102,35 +116,23 @@
             box-sizing: border-box;
         }
 
-        /* [수정] 신종 정보 팝업창 크기 및 내부 스크롤 지정 */
-        .popup-text-content { 
-            max-width: 85%; 
-            width: 500px;
-            max-height: 75vh; 
-            overflow-y: auto; 
-            text-align: left; 
-            background: rgba(20, 20, 25, 0.95); 
-            padding: 20px; 
-            border-radius: 12px; 
-            border: 1px solid var(--gold); 
-            pointer-events: auto; 
-            box-sizing: border-box;
-        }
-        .popup-text-content h2 { font-size: 1.3rem; margin-top: 0; border-bottom: 2px solid var(--gold); padding-bottom: 10px; }
-        .popup-text-content p { color: #f0f0f0; line-height: 1.6; font-size: 0.95rem; margin-bottom: 12px; word-break: keep-all; }
-
-        /* [추가] 고급스러운 골드 톤 스크롤바 커스텀 스타일 (웹킷 기반 브라우저 스마트폰 적용) */
+        /* 세련된 디자인의 스크롤바 스타일 적용 (웹킷 기반 브라우저) */
         .popup-scroll-area::-webkit-scrollbar, .popup-text-content::-webkit-scrollbar {
             width: 6px;
         }
         .popup-scroll-area::-webkit-scrollbar-track, .popup-text-content::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 3px;
         }
         .popup-scroll-area::-webkit-scrollbar-thumb, .popup-text-content::-webkit-scrollbar-thumb {
             background: var(--gold);
             border-radius: 3px;
         }
+        
+        /* 신종 정보 팝업창 크기 및 여백 조정 */
+        .popup-text-content { max-width: 85%; max-height: 75vh; overflow-y: auto; text-align: left; background: rgba(20, 20, 25, 0.95); padding: 20px; border-radius: 12px; border: 1px solid var(--gold); pointer-events: auto; }
+        .popup-text-content h2 { font-size: 1.3rem; }
+        .popup-text-content p { color: #f0f0f0; line-height: 1.6; font-size: 0.95rem; margin-bottom: 12px; word-break: keep-all; }
         
         /* 팝업 이미지 컨테이너 크기 최적화 */
         .popup-img-container { position: relative; display: inline-block; width: 100%; max-height: 35vh; text-align: center; }
@@ -299,10 +301,10 @@
               tabindex="0" 
               aria-label="닫기 및 이전 화면으로 돌아가기">&times;</span>
         <div class="popup-text-content">
-            <h2>성덕대왕신종 (聖德大王神鍾)</h2>
+            <h2 style="color: var(--gold); margin-top: 0; border-bottom: 2px solid var(--gold); padding-bottom: 10px;">성덕대왕신종 (聖德大王神鍾)</h2>
             <p>우리나라 통일신라시대 범종이다. 높이 3.66m, 입지름 2.27m, 두께 11∼25㎝이며, 무게는 18.9톤이다.</p>
             <p>신라 혜공왕 771년에 완성하였다. 쇳물과 함께 아기를 시주하여 만들었는데 맑은 종소리에는 "에밀레" 하는 아기의 울음소리가 섞여 나왔다는 설화로 인해 에밀레종이라고도 불리운다.</p>
-            <p>종의 맨 위에는 소리의 울림을 도와주는 음통(音筒)이 있는데, 이것은 우리나라 동종에서만 찾아볼 수 있는 독특한 구조이다. 종을 매다는 고리 역할을 하는 용뉴는 용머리 모양으로 조각되어 있다. 종 몸체에는 상하에 넓은 띠를 둘러 그 안에 꽃무늬를 새겨 넣었고, 종의 어깨 밑으로는 4곳에 연꽃 모양으로 돌출된 9개의 연꽃봉우리를 사각형의 연곽(蓮廓)이 둘러싸고 있다. 유곽 아래로 2쌍의 비천상이 있고, 그 사이에는 종을 치는 부분인 당좌가 연꽃 모양으로 마련되어 있다.</p>
+            <p>종의 맨 위에는 소리의 울림을 도와주는 음통(音筒)이 있는데, 이것은 우리나라 동종에서만 찾아볼 수 있는 독특한 구조이다. 종을 매다는 고리 역할을 하는 용뉴는 용머리 모양으로 조각되어 있다. 종 몸체에는 상하에 넓은 띠를 둘러 그 안에 꽃무늬를 새겨 넣었고, 종의 어깨 밑으로는 4곳에 연꽃 모양으로 돌출된 9개의 연꽃봉우리를 사각형의 연곽(蓮곽)이 둘러싸고 있다. 유곽 아래로 2쌍의 비천상이 있고, 그 사이에는 종을 치는 부분인 당좌가 연꽃 모양으로 마련되어 있다.</p>
             <p style="color: var(--gold); text-align: center; font-weight: bold; margin-top: 20px; font-size: 0.9rem;">[ 우측 상단 X 버튼을 누르면 이전 화면으로 돌아갑니다 ]</p>
         </div>
     </div>
@@ -418,6 +420,8 @@
             subtitleEl.innerText = text;
             subtitleEl.style.display = 'block';
             subtitleEl.style.opacity = 1;
+            /* [추정/추가] 새 자막 로드 시 스크롤을 항상 맨 위로 초기화 */
+            subtitleEl.scrollTop = 0;
         }
 
         function openBellInfo(event) {
@@ -427,9 +431,6 @@
             isEnteringPopup = true;
 
             document.getElementById('bell-info-overlay').style.display = 'flex';
-            
-            // 팝업 오픈 시 스크롤바 상단 이동 정렬
-            document.querySelector('.popup-text-content').scrollTop = 0;
             
             const summaryText = "성덕대왕신종 설명입니다. 우리나라에 남아있는 가장 큰 종으로 통일신라 범종의 정수입니다. 혜공왕 칠칠일년에 완공되었으며 에밀레종으로도 불립니다. 음통과 용뉴, 비천상과 당좌의 조화가 아름다운 국보입니다. 상세 내용은 화면의 텍스트를 참조바랍니다.";
             speakText(summaryText);
@@ -478,7 +479,7 @@
                 audioShort: 'yeonroe_short.mp3',
                 audioLong: 'yeonroe_long.mp3',
                 desc: '연뢰입니다. 생명의 봉우리: 만물의 탄생과 다산, 끊이지 않는 생명력과 풍요를 상징합니다.', 
-                adShort: '종 윗부분, 연뢰 영역은 사각형 공간에 아홉 개의 연꽃 봉우리가 3행 3열로 정갈하게 솟아 있습니다. 피어오르는 봉우리들은 번뇌가 씻긴 깨달음의 열매이며, 만물의 탄생과 풍요로운 우주의 질서를 시각적으로 보여줍니다.',
+                adShort: '연뢰 영역은 신라의 조화로운 세계관을 상징합니다. 종 윗부분, 보상화 문양 안의 사각형 공간에 아홉 개의 연꽃 봉우리가 3행 3열로 정갈하게 솟아 있습니다. 매끄러운 곡선을 그리며 피어오르는 봉우리들은 번뇌가 씻긴 깨달음의 열매이며, 만물의 탄생과 풍요로운 우주의 질서를 시각적으로 보여줍니다.',
                 adLong: ' 천상의 정원 같은 맑은 타악 선율은 종의 거대한 울림을 준비하는 생명의 전주곡입니다. 우주의 풍요 속에서 아홉 개의 연꽃 봉우리가 차례로 피어나는 듯한, 25현 가야금의 화려하고 정갈한 아르페지오 선율과 반짝이는 벨 트리 사운드가 우주의 풍요와 생명력을 묘사합니다.',
                 color: '#ffb7c5' 
             },
@@ -491,7 +492,7 @@
                 audioShort: 'bicheon_short.mp3',
                 audioLong: 'bicheon_long.mp3',
                 desc: '비천상입니다. 중생의 번뇌를 씻어내고 자비로운 해탈과 구제를 상징합니다.', 
-                adShort: '종의 허리 부분, 구름 위를 날아오르는 비천상은 연꽃 향로를 든 채 무릎을 꿇고 있습니다. 하늘로 뻗은 가느다란 옷자락은 중력을 거스르는 역동적인 곡선으로 종소리의 맥놀이 현상을 시각화하며, 천상의 음악이 흐르는 듯한 분위기를 자아냅니다.',
+                adShort: '종의 허리 부분, 구름 위를 날아오르는 비천상은 연꽃 향로를 든 채 우아하게 무릎을 꿇고 있습니다. 비천상은 자비로운 미소로 평온함을 전합니다 하늘로 뻗은 가느다란 옷자락은 중력을 거스르는 역동적인 곡선으로 종소리의 맥놀이 현상을 시각화합니다. 천상의 음악이 흐르는 듯한 분위기를 자아냅니다.',
                 adLong: '하늘로 유려하게 날아오르는 옷자락의 역동성과 종소리의 맥놀이를 대금의 아련하고 우아한 독주와 공간을 섬세하게 수놓는 소해금의 아름다운 선율이 천상의 허공을 가르며 해탈의 평온함을 전합니다.',
                 color: '#a8dadc' 
             },
@@ -504,8 +505,8 @@
                 audioShort: 'yongnyu_short.mp3',
                 audioLong: 'yongnyu_long.mp3',
                 desc: '용뉴입니다. 왕의 권위와 신성함을 상징하며 종소리를 멀리 퍼지게 하는 지혜가 담겨 있습니다.', 
-                adShort: '종 꼭대기의 용뉴는 용이 네 발을 힘차게 뻗어 역동적인 모습을 하고 있습니다. 그 뒤로 솟은 대나무 모양 음관은 소리를 땅으로 전달하는 통로 역할을 합니다.',
-                adLong: ' 용뉴는 단순히 종을 매달기 위한 기능적 고리에 그치지 않고, 하늘과 땅을 연결하는 신성한 영물의 권위를 표현하고자 깊이 있는 신시사이저 패드 사운드와 함께 태평소의 은은한 저음역 톤을 가미했습니다. 여기에 소리를 멀리 확장시키는 징의 깊은 잔향과 대금의 선율을 함께 조화시켜 장엄하고도 숭고한 영적 울림으로 곡을 완성합니다.',
+                adShort: '종 맨 꼭대기의 용뉴는 용이 네 발을 힘차게 뻗어 종 윗면을 딛고 있으며,역동적인 모습을 하고 있습니다. 그 뒤로 솟은 대나무 모양 음관은 소리를 땅으로 전달하는 지혜의 통로 역할을 합니다.',
+                adLong: ' 용뉴는 단순히 종을 매달기 위한 기능적 고리에 그치지 않고, 하늘과 땅을 연결하고 부처님의 가르침을 널리 퍼뜨리는 신성한 영물로서의 종교적·예술적 가치를 완벽하게 구현하고 있습니다. 하늘과 땅을 연결하는 신성한 영물의 권위를 표현하고자 깊이 있는 신시사이저 패드 사운드와 함께 태평소의 은은한 저음역 톤을 가미했습니다. 여기에 소리를 멀리 확장시키는 징의 깊은 잔향과 대금의 천상적인 선율을 함께 조화시켜 장엄하고도 숭고한 영적 울림으로 곡을 완성합니다.',
                 color: '#d4af37' 
             }
         };
@@ -529,7 +530,6 @@
 
             document.getElementById('image-overlay').style.display = 'flex';
             
-            // 새 팝업 진입 시 스크롤 위치 항상 맨 위로 리셋
             document.querySelector('.popup-scroll-area').scrollTop = 0;
 
             playNarratorAudio(data.audioDesc, data.desc);
@@ -582,6 +582,15 @@
                     <source src="${videoFile}" type="video/mp4">
                 </video>`;
                 
+            const videoElement = document.getElementById('main-video');
+            if (videoElement) {
+                videoElement.addEventListener('timeupdate', function() {
+                    if (videoElement.currentTime >= 29) {
+                        closeVideo();
+                    }
+                });
+            }
+                
             setTimeout(() => { 
                 document.querySelector('#video-overlay .close-btn').focus(); 
                 isEnteringPopup = false;
@@ -611,7 +620,6 @@
 
         const overlayEl = document.getElementById('image-overlay');
 
-        // 터치/클릭하여 심화 해설을 들을 때 스크롤 텍스트 영역 내부의 스크롤 제어 클릭은 카운트에서 배제
         overlayEl.onclick = function(e) {
             if (e.target.classList.contains('close-btn') || e.target.closest('.video-logo-btn') || e.target.closest('.popup-scroll-area') || !currentActiveType) return;
 
@@ -624,9 +632,6 @@
                 popupDescEl.innerText = data.adLong;
                 playNarratorAudio(data.audioLong, data.adLong);
             }
-            
-            // 새 텍스트 변경 시 스크롤바 정렬 초기화
-            document.querySelector('.popup-scroll-area').scrollTop = 0;
         };
 
         function closePopup() {
@@ -674,6 +679,16 @@
                 <video id="main-video" controls autoplay onended="closeVideo()">
                     <source src="Wind_Over_the_Peak.mp4" type="video/mp4">
                 </video>`;
+                
+            const videoElement = document.getElementById('main-video');
+            if (videoElement) {
+                videoElement.addEventListener('timeupdate', function() {
+                    if (videoElement.currentTime >= 29) {
+                        closeVideo();
+                    }
+                });
+            }
+
             setTimeout(() => { 
                 document.querySelector('#video-overlay .close-btn').focus(); 
                 isEnteringPopup = false;
