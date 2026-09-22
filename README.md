@@ -1,5 +1,5 @@
-# 에밀레: 천년의 울림
-### Emille — A Thousand Years of Resonance
+# 감각의 고고학 2076: 잃어버린 향의 연대기
+### Archaeology of the Senses 2076 — Chronicle of the Lost Scent
 
 <p align="center">
   <img src="https://img.shields.io/badge/WCAG-2.1%20AA-4CAF50?style=flat-square" alt="WCAG 2.1 AA">
@@ -9,57 +9,54 @@
 </p>
 
 <p align="center">
-  <b>국보 성덕대왕신종(에밀레종)을 소리와 촉각으로 재구성한 철학적 인터랙티브 작품</b><br>
-  <i>A philosophical interactive work reconstructing the Divine Bell of King Seongdeok
-  (National Treasure, better known as the "Emille Bell") through sound and touch</i>
+  <b>백제 금동대향로를 소리와 촉각으로 재구성한 사변적 고고학 인터랙티브 작품</b><br>
+  <i>A speculative-archaeology interactive work reconstructing the Baekje Gilt-bronze
+  Incense Burner through sound and touch</i>
 </p>
 
 ---
 
 ## 프로젝트 소개 / Overview
 
-**에밀레: 천년의 울림**은 통일신라 시대에 만들어진 국보 성덕대왕신종을 하나의
-평면적 유물이 아니라, 종을 이루는 각 부위 — 용뉴(龍鈕), 당좌(撞座),
-비천상(飛天像), 연뢰(蓮蕾) — 의 물성과 그 안에 깃든 서사를 소리와 촉각으로
-재구성한 작품입니다. 부위를 하나씩 짚어가며 천 년을 건너온 종소리의
-울림을 몸으로 따라가 봅니다.
+**감각의 고고학 2076: 잃어버린 향의 연대기**는 국보 백제금동대향로에 새겨진
+다섯 봉우리의 산(山), 용(龍), 봉황(鳳凰), 연꽃(蓮)의 도상을 평면적 유물
+정보가 아니라, 그 위에 새겨진 물성과 상상된 향(香)의 서사로 재구성한
+작품입니다. 2076년이라는 가상의 시점에서, 이미 사라진 향을 감각으로
+발굴한다는 사변적 설정으로 향로의 조형을 다시 짚어봅니다.
 
-*Emille* reconstructs the National Treasure Divine Bell of King Seongdeok not as
-a flat historical object, but through the materiality and narrative of each of
-its parts — the dragon hook (yongnyu), the striking point (dangjwa), the flying
-celestial reliefs (bicheonsang), and the lotus-bud bosses (yeonroe) — rendered
-through sound and touch, tracing a bell's resonance across a thousand years.
+*Archaeology of the Senses 2076* reconstructs the iconography of the Baekje
+Gilt-bronze Incense Burner — its five mountain peaks, dragon, phoenix, and
+lotus — not as flat artifact information, but through materiality and an
+imagined scent-narrative. Set at a speculative future point (2076), it
+re-excavates a long-vanished fragrance through the senses.
 
-> **"소리는 한 번의 타격에서 시작되지만, 그 울림은 천 년을 건너옵니다."**
+> **"향은 사라졌지만, 그 향이 새겨 넣은 형태는 손끝에 남아 있습니다."**
 
 ---
 
 ## 주요 기능 / Features
 
-### 🔔 촉각 탐색 / Tactile Exploration
-- 종의 네 부위(용뉴·당좌·비천상·연뢰)를 화면에서 직접 짚어가며 탐색
-- 부위마다 형태·질감·제작 기법에 대한 해설과 실제 종소리 재생
+### 🐉 도상 탐색 / Iconography Exploration
+- 향로를 이루는 산(山)·용(龍)·봉황(鳳凰)·연꽃(蓮) 도상을 하나씩 짚어가며 탐색
+- 부위마다 형태와 상징, 상상된 향의 서사에 대한 해설 제공
 
-### 🗣️ 이중 음성 안내 / Dual Narration
-- 부위별 설명 음성(성우 녹음)을 기본으로 재생
-- 음성 파일이 없거나 재생에 실패하면 브라우저 내장 음성합성(TTS)으로
-  자동 대체되어, 자막 텍스트가 있는 한 항상 설명을 들을 수 있음
+### 🕰️ 사변적 서사 / Speculative Narrative
+- 2076년이라는 가상의 시점에서 "잃어버린 향"을 감각으로 되짚는 구성
+- 영상 루프로 각 도상의 분위기를 시청각적으로 확장
 
 ### ♿ 접근성 / Accessibility
 - **WCAG 2.1 AA** 준수
 - **TalkBack / VoiceOver** 완벽 지원
-- 소리와 촉각만으로도 유물의 형태와 이야기를 온전히 경험 가능한 다감각 설계
+- 시각 없이도 형태와 서사를 온전히 경험 가능한 다감각 설계
 
 ---
 
 ## 작품 배경 / Background
 
-성덕대왕신종은 통일신라 혜공왕 7년(771년)에 완성된 한국 범종의 정점으로
-꼽히는 국보입니다. 아이를 시주해 종을 만들었다는 전설에서 비롯된
-"에밀레종"이라는 별칭으로 더 널리 알려져 있습니다. 이 작품은 그 전설과
-조형적 아름다움을, 소리와 손끝으로 다시 마주하게 합니다.
-
----
+백제금동대향로는 백제 시대(6~7세기)에 제작된 것으로 추정되는 국보로,
+불교와 도교적 세계관이 함께 새겨진 정교한 조형으로 널리 알려져 있습니다.
+이 작품은 그 조형에 실제로는 전해지지 않는 "향"이라는 감각을 상상으로
+채워 넣어, 유물을 시각 정보가 아닌 다감각 경험으로 재구성합니다.
 
 ---
 
@@ -68,7 +65,7 @@ through sound and touch, tracing a bell's resonance across a thousand years.
 | 분류 | 기술 |
 |------|------|
 | 프론트엔드 | Vanilla HTML / CSS / JavaScript |
-| 오디오 | HTML5 Audio, Web Speech API(TTS 대체 재생) |
+| 오디오 | Web Speech API |
 | PWA | Service Worker, Web App Manifest |
 | 접근성 | WAI-ARIA, WCAG 2.1 AA |
 
@@ -76,15 +73,15 @@ through sound and touch, tracing a bell's resonance across a thousand years.
 
 ## Mobile Tactile Museum 전시 / Exhibition
 
-이 작품은 **Mobile Tactile Museum (이동 촉각 뮤지엄)** 전시의 **Work 05 — 에밀레: 천년의 울림**입니다.
+이 작품은 **Mobile Tactile Museum (이동 촉각 뮤지엄)** 전시의 **Work 03 — 감각의 고고학 2076**입니다.
 
 | # | 작품 | 링크 |
 |---|------|------|
 | 01 | 오우가와 세연정: 공간의 교향곡 | [Seyeonjung-Garden](https://github.com/jdcho0721/Seyeonjung-Garden) |
 | 02 | 반가사유상: 사유의 목소리 | [Pensive-Bodhisattva](https://github.com/jdcho0721/Pensive-Bodhisattva) |
-| 03 | 감각의 고고학 2076: 잃어버린 향의 연대기 | [Incense-Burner](https://github.com/jdcho0721/Incense-Burner) |
+| 03 | **감각의 고고학 2076: 잃어버린 향의 연대기** | 현재 저장소 |
 | 04 | 전북맹아학교를 위한 촉각 음성 졸업 앨범 | [Relay-of-memories](https://github.com/jdcho0721/Relay-of-memories) |
-| 05 | **에밀레: 천년의 울림** | 현재 저장소 |
+| 05 | 에밀레: 천년의 울림 | [Emille-Bell](https://github.com/jdcho0721/Emille-Bell) |
 
 ---
 
